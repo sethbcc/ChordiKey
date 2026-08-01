@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChordiFlip UI</title>
   
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- 1. Iconify Script -->
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
   
   <!-- Google Fonts for Clean Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -109,58 +109,50 @@
       color: #a0a0a0;
     }
 
-    /* --- MAIN CONTENT AREA --- */
+    /* --- MAIN APP CONTAINER --- */
     .main-container {
       display: flex;
       flex: 1;
+      padding: 12px 12px 12px 12px;
     }
 
-    /* --- SIDEBAR --- */
+    /* --- FLOATING SIDEBAR --- */
     .sidebar {
-      width: 220px;
-      background-color: #121314;
-      padding: 15px 12px;
+      width: 196px;
+      background-color: #2c2d30;
+      border-radius: 20px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      border-top-right-radius: 12px;
+      gap: 8px;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 15px;
-      padding: 12px 16px;
-      background-color: #383a3d;
-      border-radius: 18px;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 12px;
       color: #ffffff;
       text-decoration: none;
-      font-size: 18px;
-      font-weight: 800;
-      transition: background-color 0.2s ease, transform 0.1s ease;
-      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      transition: background 0.2s;
     }
 
-    .nav-item i {
-      font-size: 22px;
-      width: 26px;
-      text-align: center;
+    .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
-    /* Active / Hover state */
     .nav-item.active {
-      background-color: #71757a;
+      background-color: #6c6d70;
     }
 
-    .nav-item:hover:not(.active) {
-      background-color: #4a4d52;
-    }
-
-    /* --- MAIN BODY CONTENT --- */
-    .content-area {
-      flex: 1;
-      background-color: #000000;
-      padding: 30px;
+    /* Styling Iconify Icons inside sidebar */
+    .nav-item iconify-icon {
+      font-size: 22px;
+      color: #ffffff;
+      flex-shrink: 0;
     }
   </style>
 </head>
@@ -180,50 +172,46 @@
     </div>
   </header>
 
-  <!-- Main Body Layout -->
+   <!-- MAIN AREA WITH FLOATING SIDEBAR -->
   <div class="main-container">
-    <aside class="sidebar">
+    <nav class="sidebar">
       <a href="#" class="nav-item active">
-        <i class="fa-solid fa-house"></i>
+        <iconify-icon icon="ph:house-fill"></iconify-icon>
         <span>Home</span>
       </a>
       <a href="#" class="nav-item">
-        <i class="fa-solid fa-square-plus"></i>
+        <iconify-icon icon="ph:plus-square-bold"></iconify-icon>
         <span>Create</span>
       </a>
       <a href="#" class="nav-item">
-        <i class="fa-solid fa-store"></i>
+        <iconify-icon icon="ph:storefront-bold"></iconify-icon>
         <span>Store</span>
       </a>
       <a href="#" class="nav-item">
-        <i class="fa-regular fa-circle-user"></i>
+        <iconify-icon icon="ph:user-circle-bold"></iconify-icon>
         <span>Profile</span>
       </a>
       <a href="#" class="nav-item">
-        <i class="fa-solid fa-user-group"></i>
+        <iconify-icon icon="ph:users-three-bold"></iconify-icon>
         <span>Friends</span>
       </a>
       <a href="#" class="nav-item">
-        <i class="fa-solid fa-graduation-cap"></i>
+        <iconify-icon icon="ph:graduation-cap-bold"></iconify-icon>
         <span>Learn</span>
       </a>
       <a href="#" class="nav-item">
-        <i class="fa-solid fa-arrows-rotate"></i>
+        <iconify-icon icon="ph:currency-circle-dollar-bold"></iconify-icon>
         <span>Subscribe</span>
       </a>
       <a href="#" class="nav-item">
-        <i class="fa-solid fa-gear"></i>
+        <iconify-icon icon="ph:gear-six-bold"></iconify-icon>
         <span>Settings</span>
       </a>
       <a href="#" class="nav-item">
-        <i class="fa-regular fa-circle-question"></i>
+        <iconify-icon icon="ph:question-bold"></iconify-icon>
         <span>Help</span>
       </a>
-    </aside>
-
-    <main class="content-area">
-      <!-- Your main page content goes here -->
-    </main>
+    </nav>
   </div>
 
 </body>
