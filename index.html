@@ -35,64 +35,64 @@
       overflow: hidden;
     }
 
-
-/* --- TOP BAR HEADER (Outer Container) --- */
+/* --- MAIN TOP BAR HEADER --- */
 .top-bar {
   display: flex;
   align-items: center;
   height: 60px;
   width: 100%;
   gap: 12px;
-  padding-right: 12px; /* Gives space on the right so the floating bar doesn't touch the right edge */
-  /* Remove any background or border-radius here so only child elements control the background */
-  background: transparent; 
+  padding-right: 12px;
 }
 
-/* --- LOGO BOX (Flush against top/left) --- */
+/* --- LOGO CONTAINER (Flush to top & left edge) --- */
 .logo-container {
-  width: 180px; /* Adjust width to match your preferred sidebar width */
+  width: 220px;
   height: 100%;
-  background-color: #212529; /* Dark background matching image */
+  background-color: #212529;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* NO border-radius so it hits the left wall and ceiling flat */
-  border-radius: 0; 
+  border-radius: 0; /* Keeps corners sharp against edges */
   flex-shrink: 0;
 }
 
-/* --- FLOATING RIGHT BAR (Search Container) --- */
-.search-container {
+/* --- FLOATING OUTER RIGHT BAR --- */
+.top-bar-right {
   flex: 1;
   height: 100%;
+  background-color: #26262a; /* Dark background of the outer bar */
+  border-radius: 12px;       /* Floating rounded corners */
   display: flex;
   align-items: center;
-  background-color: #2c2d30; /* The dark grey bar background */
-  border-radius: 14px;      /* Rounds all 4 corners to make it float */
-  padding: 0 16px;
-  overflow: hidden;         /* Ensures inner elements stay within rounded bounds */
+  padding: 0 10px;           /* Inset padding for inner search pill */
 }
 
+/* --- INNER SEARCH PILL BOX --- */
 .search-bar {
+  background-color: #3f4045; /* Lighter grey capsule background */
+  height: 42px;
+  width: 380px;               /* Fixed width to match reference image */
+  border-radius: 21px;        /* Fully rounded pill shape */
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: 100%;
+  padding: 0 16px;
 }
 
 .search-bar input {
   background: transparent;
   border: none;
   outline: none;
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 600;
+  color: #c5c6c9;
+  font-size: 16px;
+  font-weight: 700;
   width: 100%;
 }
 
 .search-bar input::placeholder {
   color: #9a9b9e;
 }
+
     .logo {
       font-family: 'Shrikhand', cursive !important;
       font-size: 29.5px;
@@ -178,6 +178,15 @@
       </div>
     </div>
   </header>
+
+<!-- Floating outer top bar -->
+  <div class="top-bar-right">
+    <!-- Inner search box pill -->
+    <div class="search-bar">
+      <input type="text" placeholder="Search ChordiFlip">
+    </div>
+  </div>
+</header>
 
    <!-- MAIN AREA WITH FLOATING SIDEBAR -->
   <div class="main-container">
