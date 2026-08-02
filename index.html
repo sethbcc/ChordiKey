@@ -5,18 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChordiFlip UI</title>
   
-<!-- 1. Iconify Script -->
+  <!-- Iconify Script -->
   <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
   
-  <!-- Google Fonts for Clean Typography -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
-
-  <!-- Add this Google Fonts link inside your <head> tags -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@700;800&family=Shrikhand&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -33,94 +28,83 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      padding: 12px 12px 0 0; /* Padding to match sidebar spacing */
     }
 
-/* --- MAIN TOP BAR HEADER --- */
-.top-bar {
-  display: flex;
-  align-items: center;
-  height: 60px;
-  width: 100%;
-  gap: 12px;
-  padding-right: 12px;
-}
+    /* --- MAIN TOP BAR HEADER --- */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      height: 60px;
+      width: 100%;
+      gap: 12px;
+      padding-left: 0;
+    }
 
-/* --- LOGO CONTAINER (Flush to top & left edge) --- */
-.logo-container {
-  width: 220px;
-  height: 100%;
-  background-color: #212529;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0; /* Keeps corners sharp against edges */
-  flex-shrink: 0;
-}
-
-/* --- FLOATING OUTER RIGHT BAR --- */
-.top-bar-right {
-  flex: 1;
-  height: 100%;
-  background-color: #26262a; /* Dark background of the outer bar */
-  border-radius: 12px;       /* Floating rounded corners */
-  display: flex;
-  align-items: center;
-  padding: 0 10px;           /* Inset padding for inner search pill */
-}
-
-/* --- INNER SEARCH PILL BOX --- */
-.search-bar {
-  background-color: #3f4045; /* Lighter grey capsule background */
-  height: 42px;
-  width: 380px;               /* Fixed width to match reference image */
-  border-radius: 21px;        /* Fully rounded pill shape */
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-}
-
-.search-bar input {
-  background: transparent;
-  border: none;
-  outline: none;
-  color: #c5c6c9;
-  font-size: 16px;
-  font-weight: 700;
-  width: 100%;
-}
-
-.search-bar input::placeholder {
-  color: #9a9b9e;
-}
+    /* --- LOGO CONTAINER --- */
+    .logo-container {
+      width: 220px;
+      height: 100%;
+      background-color: #212529;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0 12px 12px 0; /* Optional: subtle curve inside, or keep 0 for full flush */
+      flex-shrink: 0;
+    }
 
     .logo {
       font-family: 'Shrikhand', cursive !important;
       font-size: 29.5px;
       font-weight: 700;
-      letter-spacing: -0px;
-      line-spacing: -1.4px;
+      letter-spacing: 0;
     }
 
-    .logo span {
-  font-family: inherit;
-    } 
-      .logo span.chord {
-      color: #ffffff;
+    .logo span.chord { color: #ffffff; }
+    .logo span.i { color: #ffde59; }  
+    .logo span.flip { color: #6edad6; }
+
+    /* --- FLOATING OUTER RIGHT BAR --- */
+    .top-bar-right {
+      flex: 1;
+      height: 100%;
+      background-color: #26262a;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
     }
 
-    .logo span.i {
-      color: #ffde59;
-    }  
+    /* --- INNER SEARCH PILL BOX --- */
+    .search-bar {
+      background-color: #3f4045;
+      height: 42px;
+      width: 380px;
+      border-radius: 21px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+    }
 
-    .logo span.flip {
-      color: #6edad6;
+    .search-bar input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #c5c6c9;
+      font-size: 16px;
+      font-weight: 700;
+      width: 100%;
+    }
+
+    .search-bar input::placeholder {
+      color: #9a9b9e;
     }
 
     /* --- MAIN APP CONTAINER --- */
     .main-container {
       display: flex;
       flex: 1;
-      padding: 12px 12px 12px 12px;
+      padding: 12px 0 12px 12px;
     }
 
     /* --- FLOATING SIDEBAR --- */
@@ -142,7 +126,7 @@
       border-radius: 12px;
       color: #ffffff;
       text-decoration: none;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       transition: background 0.2s;
     }
@@ -155,7 +139,6 @@
       background-color: #6c6d70;
     }
 
-    /* Styling Iconify Icons inside sidebar */
     .nav-item iconify-icon {
       font-size: 22px;
       color: #ffffff;
@@ -172,23 +155,16 @@
         <span class="chord">Chord</span><span class="i">i</span><span class="flip">Flip</span>
       </div>
     </div>
-    <div class="search-container">
+
+    <!-- Floating Outer Right Bar -->
+    <div class="top-bar-right">
       <div class="search-bar">
         <input type="text" placeholder="Search ChordiFlip">
       </div>
     </div>
   </header>
 
-<!-- Floating outer top bar -->
-  <div class="top-bar-right">
-    <!-- Inner search box pill -->
-    <div class="search-bar">
-      <input type="text" placeholder="Search ChordiFlip">
-    </div>
-  </div>
-</header>
-
-   <!-- MAIN AREA WITH FLOATING SIDEBAR -->
+  <!-- Main Area with Floating Sidebar -->
   <div class="main-container">
     <nav class="sidebar">
       <a href="#" class="nav-item active">
