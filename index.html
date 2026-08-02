@@ -35,27 +35,64 @@
       overflow: hidden;
     }
 
-    /* --- TOP NAVBAR --- */
-    .top-bar {
-      display: flex;
-      align-items: center;
-      height: 70px;
-      gap: 4px;
-      border-radius: 10px;
-      padding: 12px;
-      
-    }
 
-    .logo-container {
-      width: 344.7px;
-      height: 100%;
-      background-color: #212529;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom-right-radius: 4px;
-    }
+/* --- TOP BAR HEADER (Outer Container) --- */
+.top-bar {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  width: 100%;
+  gap: 12px;
+  padding-right: 12px; /* Gives space on the right so the floating bar doesn't touch the right edge */
+  /* Remove any background or border-radius here so only child elements control the background */
+  background: transparent; 
+}
 
+/* --- LOGO BOX (Flush against top/left) --- */
+.logo-container {
+  width: 180px; /* Adjust width to match your preferred sidebar width */
+  height: 100%;
+  background-color: #212529; /* Dark background matching image */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* NO border-radius so it hits the left wall and ceiling flat */
+  border-radius: 0; 
+  flex-shrink: 0;
+}
+
+/* --- FLOATING RIGHT BAR (Search Container) --- */
+.search-container {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background-color: #2c2d30; /* The dark grey bar background */
+  border-radius: 14px;      /* Rounds all 4 corners to make it float */
+  padding: 0 16px;
+  overflow: hidden;         /* Ensures inner elements stay within rounded bounds */
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.search-bar input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  width: 100%;
+}
+
+.search-bar input::placeholder {
+  color: #9a9b9e;
+}
     .logo {
       font-family: 'Shrikhand', cursive !important;
       font-size: 29.5px;
@@ -77,39 +114,6 @@
 
     .logo span.flip {
       color: #6edad6;
-    }
-
-    .search-container {
-      flex: 1;
-      height: 100%;
-      background-color: #1a1a1a;
-      display: flex;
-      align-items: center;
-      padding-left: 20px;
-    }
-
-    .search-bar {
-      width: 420px;
-      height: 48px;
-      background-color: #3b3d3e;
-      border-radius: 24px;
-      display: flex;
-      align-items: center;
-      padding: 0 20px;
-    }
-
-    .search-bar input {
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #ffffff;
-      font-size: 18px;
-      font-weight: 700;
-      width: 100%;
-    }
-
-    .search-bar input::placeholder {
-      color: #a0a0a0;
     }
 
     /* --- MAIN APP CONTAINER --- */
