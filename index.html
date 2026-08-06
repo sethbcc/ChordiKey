@@ -40,6 +40,7 @@
       height: 60px;
       width: 100%;
       gap: 12px;
+      flex-shrink: 0;
     }
 
     /* --- LOGO CONTAINER --- */
@@ -167,40 +168,39 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
+      position: relative;
     }
 
     .page-view {
       display: none;
       height: 100%;
+      width: 100%;
     }
 
     .page-view.active {
-      display: block;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* --- SUBVIEWS LAYOUT --- */
+    /* --- SUBVIEWS SWITCHING FIX --- */
     .create-subview {
-      display: none;
+      display: none !important;
       height: 100%;
       width: 100%;
     }
 
     .create-subview.active {
-      display: flex;
+      display: flex !important;
     }
 
     /* --- SCROLLABLE CREATE CONTAINER --- */
     .create-container {
-      display: flex;
       flex-wrap: wrap;
       align-content: flex-start;
       gap: 24px;
       padding: 4px 12px 24px 0;
       overflow-y: auto;
       max-height: 100%;
-      width: 100%;
-
-      /* Scrollbar styling */
       scrollbar-width: thin;
       scrollbar-color: #4f4f52 transparent;
     }
@@ -282,8 +282,8 @@
       width: 100%;
       max-width: 500px;
       height: auto;
-      min-height: 260px;
-      padding: 36px 40px;
+      min-height: 240px;
+      padding: 32px 36px;
       display: flex;
       flex-direction: column;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -335,6 +335,11 @@
     }
 
     /* --- PIANO EDITOR VIEW --- */
+    #create-editor-subview {
+      align-items: center;
+      justify-content: center;
+    }
+
     .piano-editor-card {
       position: relative;
       background-color: #535353;
@@ -411,10 +416,10 @@
     .black-key.k5 { left: 80.8%; }
 
     /* =========================================================
-       RESPONSIVE DESIGN: MOBILE PORTRAIT & LANDSCAPE
+       MOBILE RESPONSIVE RULES
        ========================================================= */
 
-    /* --- MOBILE PORTRAIT (Up to 768px wide) --- */
+    /* --- MOBILE PORTRAIT --- */
     @media (max-width: 768px) and (orientation: portrait) {
       body {
         padding: 8px;
@@ -451,7 +456,7 @@
 
       .sidebar {
         width: 100%;
-        height: 60px;
+        height: 56px;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
@@ -482,11 +487,11 @@
       }
 
       .piano-keyboard-strip {
-        height: 280px;
+        height: 220px;
       }
 
       .file-form-card {
-        width: 90%;
+        width: 92%;
         padding: 24px;
       }
 
@@ -496,28 +501,28 @@
       }
     }
 
-    /* --- MOBILE LANDSCAPE (Short screens) --- */
+    /* --- MOBILE LANDSCAPE --- */
     @media (max-height: 500px) and (orientation: landscape) {
       body {
         padding: 6px;
       }
 
       .top-bar {
-        height: 42px;
+        height: 40px;
         gap: 8px;
       }
 
       .logo-container {
-        width: 150px;
+        width: 140px;
       }
 
       .logo {
-        font-size: 20px;
+        font-size: 18px;
       }
 
       .search-bar {
-        height: 32px;
-        width: 240px;
+        height: 30px;
+        width: 220px;
       }
 
       .main-container {
@@ -526,7 +531,7 @@
       }
 
       .sidebar {
-        width: 58px;
+        width: 52px;
         padding: 6px;
         border-radius: 14px;
       }
@@ -552,7 +557,7 @@
       }
 
       .file-form-card {
-        padding: 20px;
+        padding: 18px;
         width: 85%;
       }
 
