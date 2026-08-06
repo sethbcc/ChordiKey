@@ -174,20 +174,20 @@
       display: block;
     }
 
-    /* --- CREATE PAGE LAYOUT (INITIAL CARDS) --- */
-    .create-container {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding-top: 4px;
-    }
-
+    /* --- SUBVIEWS LAYOUT --- */
     .create-subview {
       display: none;
+      height: 100%;
     }
 
     .create-subview.active {
       display: flex;
+    }
+
+    .create-container {
+      align-items: flex-start;
+      gap: 16px;
+      padding-top: 4px;
     }
 
     .new-project-card {
@@ -216,6 +216,7 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
+      padding-top: 8px;
     }
 
     .project-details .project-name {
@@ -287,6 +288,55 @@
       background-color: #38c80d;
       transform: scale(1.02);
     }
+
+    /* --- PIANO EDITOR VIEW --- */
+    .piano-editor-card {
+      background-color: #535353;
+      border-radius: 20px;
+      width: 100%;
+      height: calc(100vh - 100px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .piano-keyboard-strip {
+      width: 100%;
+      height: 230px;
+      background-color: #ffffff;
+      position: relative;
+      display: flex;
+    }
+
+    .white-key {
+      flex: 1;
+      height: 100%;
+      border-right: 2px solid #2d2d2d;
+      background-color: #ffffff;
+    }
+
+    .white-key:last-child {
+      border-right: none;
+    }
+
+    .black-key {
+      position: absolute;
+      top: 0;
+      width: 9.8%;
+      height: 60%;
+      background-color: #000000;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      z-index: 2;
+    }
+
+    /* Positioning black keys across 7 white keys */
+    .black-key.k1 { left: 9.3%; }
+    .black-key.k2 { left: 23.6%; }
+    .black-key.k3 { left: 52.2%; }
+    .black-key.k4 { left: 66.5%; }
+    .black-key.k5 { left: 80.8%; }
   </style>
 </head>
 <body>
@@ -371,7 +421,30 @@
           <div class="file-form-card">
             <label class="file-form-title">Enter file name:</label>
             <input type="text" class="file-name-input" placeholder="File name">
-            <button class="create-file-btn">Create file</button>
+            <button class="create-file-btn" id="submit-create-file-btn">Create file</button>
+          </div>
+        </div>
+
+        <!-- Subview C: Piano Keyboard Editor View -->
+        <div id="create-editor-subview" class="create-subview">
+          <div class="piano-editor-card">
+            <div class="piano-keyboard-strip">
+              <!-- 7 White Keys -->
+              <div class="white-key"></div>
+              <div class="white-key"></div>
+              <div class="white-key"></div>
+              <div class="white-key"></div>
+              <div class="white-key"></div>
+              <div class="white-key"></div>
+              <div class="white-key"></div>
+
+              <!-- 5 Black Keys -->
+              <div class="black-key k1"></div>
+              <div class="black-key k2"></div>
+              <div class="black-key k3"></div>
+              <div class="black-key k4"></div>
+              <div class="black-key k5"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -385,8 +458,11 @@
     const searchInput = document.getElementById('main-search-input');
 
     const addProjectBtn = document.getElementById('add-project-btn');
+    const submitCreateFileBtn = document.getElementById('submit-create-file-btn');
+    
     const createMainSubview = document.getElementById('create-main-subview');
     const createFileSubview = document.getElementById('create-file-subview');
+    const createEditorSubview = document.getElementById('create-editor-subview');
 
     // Sidebar navigation handler
     navItems.forEach(item => {
@@ -410,6 +486,7 @@
         if (targetId === 'create-view') {
           createMainSubview.classList.add('active');
           createFileSubview.classList.remove('active');
+          createEditorSubview.classList.remove('active');
         }
 
         // 3. Update Search Placeholder Text
@@ -420,10 +497,18 @@
       });
     });
 
-    // Plus card click handler to open the "Enter file name" view
+    // Plus card click handler -> opens the "Enter file name" view
     addProjectBtn.addEventListener('click', () => {
       createMainSubview.classList.remove('active');
       createFileSubview.classList.add('active');
+      createEditorSubview.classList.remove('active');
+    });
+
+    // Green "Create file" button click handler -> opens the Piano Keyboard Editor view
+    submitCreateFileBtn.addEventListener('click', () => {
+      createMainSubview.classList.remove('active');
+      createFileSubview.classList.remove('active');
+      createEditorSubview.classList.add('active');
     });
   </script>
 </body>
