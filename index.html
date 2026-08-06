@@ -33,6 +33,11 @@
       padding: 12px 12px 0 12px;
     }
 
+    /* --- STRICT HIDDEN UTILITY --- */
+    .hidden {
+      display: none !important;
+    }
+
     /* --- MAIN TOP BAR HEADER --- */
     .top-bar {
       display: flex;
@@ -182,25 +187,16 @@
       flex-direction: column;
     }
 
-    /* --- SUBVIEWS SWITCHING FIX --- */
-    .create-subview {
-      display: none !important;
-      height: 100%;
-      width: 100%;
-    }
-
-    .create-subview.active {
-      display: flex !important;
-    }
-
     /* --- SCROLLABLE CREATE CONTAINER --- */
     .create-container {
+      display: flex;
       flex-wrap: wrap;
       align-content: flex-start;
       gap: 24px;
       padding: 4px 12px 24px 0;
       overflow-y: auto;
-      max-height: 100%;
+      height: 100%;
+      width: 100%;
       scrollbar-width: thin;
       scrollbar-color: #4f4f52 transparent;
     }
@@ -270,19 +266,19 @@
     }
 
     /* --- CENTERED FILE FORM CARD VIEW --- */
-    #create-file-subview {
+    .file-subview-wrapper {
+      display: flex;
       align-items: center;
       justify-content: center;
+      height: 100%;
+      width: 100%;
     }
 
     .file-form-card {
-      position: relative;
       background-color: #27272a;
       border-radius: 20px;
       width: 100%;
-      max-width: 500px;
-      height: auto;
-      min-height: 240px;
+      max-width: 480px;
       padding: 32px 36px;
       display: flex;
       flex-direction: column;
@@ -335,9 +331,11 @@
     }
 
     /* --- PIANO EDITOR VIEW --- */
-    #create-editor-subview {
-      align-items: center;
-      justify-content: center;
+    .editor-subview-wrapper {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .piano-editor-card {
@@ -419,7 +417,6 @@
        MOBILE RESPONSIVE RULES
        ========================================================= */
 
-    /* --- MOBILE PORTRAIT --- */
     @media (max-width: 768px) and (orientation: portrait) {
       body {
         padding: 8px;
@@ -500,83 +497,6 @@
         font-size: 18px;
       }
     }
-
-    /* --- MOBILE LANDSCAPE --- */
-    @media (max-height: 500px) and (orientation: landscape) {
-      body {
-        padding: 6px;
-      }
-
-      .top-bar {
-        height: 40px;
-        gap: 8px;
-      }
-
-      .logo-container {
-        width: 140px;
-      }
-
-      .logo {
-        font-size: 18px;
-      }
-
-      .search-bar {
-        height: 30px;
-        width: 220px;
-      }
-
-      .main-container {
-        padding: 6px 0 0 0;
-        gap: 8px;
-      }
-
-      .sidebar {
-        width: 52px;
-        padding: 6px;
-        border-radius: 14px;
-      }
-
-      .nav-item {
-        justify-content: center;
-        padding: 8px 0;
-      }
-
-      .nav-item span {
-        display: none;
-      }
-
-      .active-project-banner {
-        top: 8px;
-        left: 12px;
-        font-size: 14px;
-        padding: 4px 10px;
-      }
-
-      .piano-keyboard-strip {
-        height: 80%;
-      }
-
-      .file-form-card {
-        padding: 18px;
-        width: 85%;
-      }
-
-      .file-form-title {
-        font-size: 18px;
-        margin-bottom: 10px;
-      }
-
-      .file-name-input {
-        height: 40px;
-        font-size: 16px;
-        margin-bottom: 14px;
-      }
-
-      .create-file-btn {
-        padding: 8px 18px;
-        font-size: 16px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -645,11 +565,12 @@
 
       <!-- 2. Create Page View -->
       <div id="create-view" class="page-view">
+        
         <!-- Subview A: Scrollable Dynamic Project List View -->
-        <div id="create-main-subview" class="create-container create-subview active"></div>
+        <div id="create-main-subview" class="create-container"></div>
 
         <!-- Subview B: Centered File Name Input View -->
-        <div id="create-file-subview" class="create-subview">
+        <div id="create-file-subview" class="file-subview-wrapper hidden">
           <div class="file-form-card">
             <label class="file-form-title">Enter file name:</label>
             <input type="text" id="project-name-input" class="file-name-input" placeholder="File name">
@@ -658,7 +579,7 @@
         </div>
 
         <!-- Subview C: Piano Keyboard Editor View -->
-        <div id="create-editor-subview" class="create-subview">
+        <div id="create-editor-subview" class="editor-subview-wrapper hidden">
           <div class="piano-editor-card">
             <div id="current-project-title" class="active-project-banner">Project: Untitled</div>
 
@@ -681,6 +602,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -701,6 +623,15 @@
 
     let savedProjects = JSON.parse(localStorage.getItem('chordiflip_projects')) || [];
 
+    // STRICT SUBVIEW SWITCHER
+    function showSubview(targetSubview) {
+      createMainSubview.classList.add('hidden');
+      createFileSubview.classList.add('hidden');
+      createEditorSubview.classList.add('hidden');
+
+      targetSubview.classList.remove('hidden');
+    }
+
     function renderProjects() {
       createMainSubview.innerHTML = '';
 
@@ -708,7 +639,7 @@
         const item = document.createElement('div');
         item.className = 'project-item';
         item.innerHTML = `
-          <div class="saved-project-card" data-id="${proj.id}">
+          <div class="saved-project-card">
             <iconify-icon icon="solar:music-note-bold"></iconify-icon>
           </div>
           <div class="project-details">
@@ -738,9 +669,7 @@
 
       addCardItem.querySelector('#add-project-btn').addEventListener('click', () => {
         projectNameInput.value = '';
-        createMainSubview.classList.remove('active');
-        createFileSubview.classList.add('active');
-        createEditorSubview.classList.remove('active');
+        showSubview(createFileSubview);
       });
 
       createMainSubview.appendChild(addCardItem);
@@ -748,9 +677,7 @@
 
     function openPianoEditor(title) {
       currentProjectTitle.textContent = `Project: ${title}`;
-      createMainSubview.classList.remove('active');
-      createFileSubview.classList.remove('active');
-      createEditorSubview.classList.add('active');
+      showSubview(createEditorSubview);
     }
 
     navItems.forEach(item => {
@@ -770,9 +697,7 @@
 
         if (targetId === 'create-view') {
           renderProjects();
-          createMainSubview.classList.add('active');
-          createFileSubview.classList.remove('active');
-          createEditorSubview.classList.remove('active');
+          showSubview(createMainSubview);
         }
 
         const newPlaceholder = item.getAttribute('data-placeholder');
