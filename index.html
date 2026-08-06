@@ -182,20 +182,36 @@
     .create-subview {
       display: none;
       height: 100%;
+      width: 100%;
     }
 
     .create-subview.active {
       display: flex;
     }
 
+    /* --- SCROLLABLE CREATE CONTAINER --- */
     .create-container {
       display: flex;
       flex-wrap: wrap;
-      align-items: flex-start;
+      align-content: flex-start;
       gap: 24px;
-      padding-top: 4px;
+      padding: 4px 12px 24px 0;
       overflow-y: auto;
       max-height: 100%;
+      width: 100%;
+
+      /* Scrollbar styling */
+      scrollbar-width: thin;
+      scrollbar-color: #4f4f52 transparent;
+    }
+
+    .create-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .create-container::-webkit-scrollbar-thumb {
+      background-color: #4f4f52;
+      border-radius: 10px;
     }
 
     .project-item {
@@ -253,16 +269,24 @@
       color: #d1d2d5;
     }
 
-    /* --- FORM CARD VIEW --- */
+    /* --- CENTERED FILE FORM CARD VIEW --- */
+    #create-file-subview {
+      align-items: center;
+      justify-content: center;
+    }
+
     .file-form-card {
       position: relative;
       background-color: #27272a;
       border-radius: 20px;
       width: 100%;
-      height: 100%;
+      max-width: 500px;
+      height: auto;
+      min-height: 260px;
       padding: 36px 40px;
       display: flex;
       flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
     .file-form-title {
@@ -283,6 +307,7 @@
       color: #ffffff;
       font-size: 20px;
       font-weight: 700;
+      margin-bottom: 24px;
     }
 
     .file-name-input::placeholder {
@@ -291,9 +316,7 @@
     }
 
     .create-file-btn {
-      position: absolute;
-      bottom: 28px;
-      right: 28px;
+      align-self: flex-end;
       background-color: #2faf0a;
       color: #ffffff;
       border: none;
@@ -303,6 +326,12 @@
       font-size: 22px;
       font-weight: 800;
       cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .create-file-btn:hover {
+      background-color: #38c80d;
+      transform: scale(1.02);
     }
 
     /* --- PIANO EDITOR VIEW --- */
@@ -388,7 +417,7 @@
     /* --- MOBILE PORTRAIT (Up to 768px wide) --- */
     @media (max-width: 768px) and (orientation: portrait) {
       body {
-        padding: 8px 8px 8px 8px;
+        padding: 8px;
       }
 
       .top-bar {
@@ -414,7 +443,6 @@
         font-size: 14px;
       }
 
-      /* Stack main container & move navigation to a bottom tab bar */
       .main-container {
         flex-direction: column-reverse;
         padding: 8px 0 0 0;
@@ -439,7 +467,7 @@
       }
 
       .nav-item span {
-        display: none; /* Hide text on bottom nav bar for mobile portrait */
+        display: none;
       }
 
       .nav-item iconify-icon {
@@ -454,24 +482,21 @@
       }
 
       .piano-keyboard-strip {
-        height: 280px; /* Taller keys for easy thumb tapping */
+        height: 280px;
       }
 
       .file-form-card {
-        padding: 20px;
+        width: 90%;
+        padding: 24px;
       }
 
       .create-file-btn {
-        position: relative;
-        bottom: auto;
-        right: auto;
-        margin-top: 24px;
         width: 100%;
         font-size: 18px;
       }
     }
 
-    /* --- MOBILE LANDSCAPE (Short screens, wide aspect ratio) --- */
+    /* --- MOBILE LANDSCAPE (Short screens) --- */
     @media (max-height: 500px) and (orientation: landscape) {
       body {
         padding: 6px;
@@ -500,7 +525,6 @@
         gap: 8px;
       }
 
-      /* Mini Icon-only sidebar for maximum piano space */
       .sidebar {
         width: 58px;
         padding: 6px;
@@ -524,11 +548,12 @@
       }
 
       .piano-keyboard-strip {
-        height: 80%; /* Takes almost full height of the editor card */
+        height: 80%;
       }
 
       .file-form-card {
-        padding: 16px;
+        padding: 20px;
+        width: 85%;
       }
 
       .file-form-title {
@@ -539,11 +564,10 @@
       .file-name-input {
         height: 40px;
         font-size: 16px;
+        margin-bottom: 14px;
       }
 
       .create-file-btn {
-        bottom: 16px;
-        right: 16px;
         padding: 8px 18px;
         font-size: 16px;
       }
@@ -616,10 +640,10 @@
 
       <!-- 2. Create Page View -->
       <div id="create-view" class="page-view">
-        <!-- Subview A: Dynamic Project List View -->
+        <!-- Subview A: Scrollable Dynamic Project List View -->
         <div id="create-main-subview" class="create-container create-subview active"></div>
 
-        <!-- Subview B: File Name Input View -->
+        <!-- Subview B: Centered File Name Input View -->
         <div id="create-file-subview" class="create-subview">
           <div class="file-form-card">
             <label class="file-form-title">Enter file name:</label>
@@ -656,7 +680,7 @@
     </div>
   </div>
 
-  <!-- JavaScript App Logic & Persistence Engine -->
+  <!-- JavaScript App Logic -->
   <script>
     const navItems = document.querySelectorAll('.nav-item');
     const pageViews = document.querySelectorAll('.page-view');
@@ -802,7 +826,6 @@
       osc.stop(audioCtx.currentTime + 1.2);
     }
 
-    // Attach dual click & touch handlers for mobile performance
     const allKeys = document.querySelectorAll('.white-key, .black-key');
     
     function triggerKey(e, key) {
