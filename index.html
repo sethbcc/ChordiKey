@@ -213,6 +213,88 @@
   font-weight: 600;
   color: #d1d2d5;
 }
+
+<!-- Top Bar Layout -->
+<header class="top-bar">
+  <div class="logo-container">
+    <div class="logo">
+      <span class="chord">Chord</span><span class="i">i</span><span class="flip">Flip</span>
+    </div>
+  </div>
+
+  <div class="top-bar-right">
+    <div class="search-bar">
+      <!-- ID added to input for JS target -->
+      <input type="text" id="main-search-input" placeholder="Search ChordiFlip">
+      <iconify-icon icon="mingcute:search-line"></iconify-icon>
+    </div>
+  </div>
+</header>
+
+<!-- Main Area with Sidebar and Dynamic Content -->
+<div class="main-container">
+  <nav class="sidebar">
+    <a href="#" class="nav-item active" data-target="home-view" data-placeholder="Search ChordiFlip">
+      <iconify-icon icon="famicons:home"></iconify-icon>
+      <span>Home</span>
+    </a>
+    <!-- Added data attributes for navigation -->
+    <a href="#" class="nav-item" data-target="create-view" data-placeholder="Search Projects">
+      <iconify-icon icon="gridicons:create"></iconify-icon>
+      <span>Create</span>
+    </a>
+    <a href="#" class="nav-item" data-target="store-view" data-placeholder="Search Store">
+      <iconify-icon icon="material-symbols:store-rounded"></iconify-icon>
+      <span>Store</span>
+    </a>
+    <a href="#" class="nav-item" data-target="profile-view" data-placeholder="Search Profile">
+      <iconify-icon icon="gg:profile"></iconify-icon>
+      <span>Profile</span>
+    </a>
+    <a href="#" class="nav-item" data-target="friends-view" data-placeholder="Search Friends">
+      <iconify-icon icon="fa7-solid:user-friends"></iconify-icon>
+      <span>Friends</span>
+    </a>
+    <a href="#" class="nav-item" data-target="learn-view" data-placeholder="Search Lessons">
+      <iconify-icon icon="material-symbols:school-rounded"></iconify-icon>
+      <span>Learn</span>
+    </a>
+    <a href="#" class="nav-item" data-target="subscribe-view" data-placeholder="Search Plans">
+      <iconify-icon icon="streamline:subscription-cashflow-solid"></iconify-icon>
+      <span>Subscribe</span>
+    </a>
+    <a href="#" class="nav-item" data-target="settings-view" data-placeholder="Search Settings">
+      <iconify-icon icon="material-symbols:settings-rounded"></iconify-icon>
+      <span>Settings</span>
+    </a>
+    <a href="#" class="nav-item" data-target="help-view" data-placeholder="Search Help">
+      <iconify-icon icon="material-symbols:help-rounded"></iconify-icon>
+      <span>Help</span>
+    </a>
+  </nav>
+
+  <!-- Content Container -->
+  <div class="content-area">
+    <!-- Home View -->
+    <div id="home-view" class="page-view active">
+      <!-- Home Content Goes Here -->
+    </div>
+
+    <!-- Create View -->
+    <div id="create-view" class="page-view">
+      <div class="create-container">
+        <div class="new-project-card">
+          <iconify-icon icon="ic:round-add"></iconify-icon>
+        </div>
+        <div class="project-details">
+          <span class="project-name">name</span>
+          <span class="project-date">date created</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
   
 
 <!-- Top Bar Layout -->
@@ -275,6 +357,32 @@
       </a>
     </nav>
   </div>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- 1. External Scripts & Fonts -->
+  <script src="https://code.iconify.design/..."></script>
+
+  <!-- 2. All your CSS goes here -->
+  <style>
+    /* Existing styles + New page/card styles */
+  </style>
+</head>
+<body>
+
+  <!-- 3. Top Bar Header -->
+  <header class="top-bar"> ... </header>
+
+  <!-- 4. Main Layout (Sidebar + Page Views) -->
+  <div class="main-container"> ... </div>
+
+  <!-- 5. Navigation JavaScript goes right before </body> -->
+  <script>
+    // Navigation script here
+  </script>
+</body>
+</html>
 
 </body>
 </html>
