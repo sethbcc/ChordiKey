@@ -161,22 +161,33 @@
     .content-area {
       flex: 1;
       padding-left: 20px;
+      display: flex;
+      flex-direction: column;
     }
 
     .page-view {
       display: none;
+      height: 100%;
     }
 
     .page-view.active {
       display: block;
     }
 
-    /* --- CREATE PAGE LAYOUT --- */
+    /* --- CREATE PAGE LAYOUT (INITIAL CARDS) --- */
     .create-container {
       display: flex;
       align-items: center;
       gap: 16px;
       padding-top: 4px;
+    }
+
+    .create-subview {
+      display: none;
+    }
+
+    .create-subview.active {
+      display: flex;
     }
 
     .new-project-card {
@@ -217,6 +228,64 @@
       font-size: 20px;
       font-weight: 600;
       color: #d1d2d5;
+    }
+
+    /* --- ENTER FILE NAME FORM CARD VIEW --- */
+    .file-form-card {
+      position: relative;
+      background-color: #27272a;
+      border-radius: 20px;
+      width: 100%;
+      height: calc(100vh - 100px);
+      padding: 36px 40px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .file-form-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 18px;
+    }
+
+    .file-name-input {
+      width: 100%;
+      height: 52px;
+      background-color: #4b4c50;
+      border: none;
+      outline: none;
+      border-radius: 16px;
+      padding: 0 22px;
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .file-name-input::placeholder {
+      color: #b0b1b5;
+      font-weight: 700;
+    }
+
+    .create-file-btn {
+      position: absolute;
+      bottom: 28px;
+      right: 28px;
+      background-color: #2faf0a;
+      color: #ffffff;
+      border: none;
+      outline: none;
+      border-radius: 16px;
+      padding: 12px 28px;
+      font-size: 22px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .create-file-btn:hover {
+      background-color: #38c80d;
+      transform: scale(1.02);
     }
   </style>
 </head>
@@ -286,13 +355,23 @@
 
       <!-- 2. Create Page View -->
       <div id="create-view" class="page-view">
-        <div class="create-container">
-          <div class="new-project-card">
+        <!-- Subview A: Initial Create Card -->
+        <div id="create-main-subview" class="create-container create-subview active">
+          <div class="new-project-card" id="add-project-btn">
             <iconify-icon icon="ic:round-add"></iconify-icon>
           </div>
           <div class="project-details">
             <span class="project-name">name</span>
             <span class="project-date">date created</span>
+          </div>
+        </div>
+
+        <!-- Subview B: Form Card -->
+        <div id="create-file-subview" class="create-subview">
+          <div class="file-form-card">
+            <label class="file-form-title">Enter file name:</label>
+            <input type="text" class="file-name-input" placeholder="File name">
+            <button class="create-file-btn">Create file</button>
           </div>
         </div>
       </div>
@@ -305,6 +384,11 @@
     const pageViews = document.querySelectorAll('.page-view');
     const searchInput = document.getElementById('main-search-input');
 
+    const addProjectBtn = document.getElementById('add-project-btn');
+    const createMainSubview = document.getElementById('create-main-subview');
+    const createFileSubview = document.getElementById('create-file-subview');
+
+    // Sidebar navigation handler
     navItems.forEach(item => {
       item.addEventListener('click', (e) => {
         e.preventDefault();
@@ -322,12 +406,24 @@
           targetView.classList.add('active');
         }
 
+        // Reset Create tab subview when clicking the sidebar item
+        if (targetId === 'create-view') {
+          createMainSubview.classList.add('active');
+          createFileSubview.classList.remove('active');
+        }
+
         // 3. Update Search Placeholder Text
         const newPlaceholder = item.getAttribute('data-placeholder');
         if (newPlaceholder) {
           searchInput.placeholder = newPlaceholder;
         }
       });
+    });
+
+    // Plus card click handler to open the "Enter file name" view
+    addProjectBtn.addEventListener('click', () => {
+      createMainSubview.classList.remove('active');
+      createFileSubview.classList.add('active');
     });
   </script>
 </body>
