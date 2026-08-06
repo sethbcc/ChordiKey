@@ -152,7 +152,70 @@
 </head>
 <body>
 
-  <!-- Top Bar Layout -->
+/* Content Container beside Sidebar */
+.content-area {
+  flex: 1;
+  padding-left: 20px;
+}
+
+/* Page Visibility Toggle */
+.page-view {
+  display: none;
+}
+
+.page-view.active {
+  display: block;
+}
+
+/* --- CREATE PAGE LAYOUT --- */
+.create-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.new-project-card {
+  width: 140px;
+  height: 140px;
+  background-color: #4f4f52;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.new-project-card:hover {
+  background-color: #5d5e62;
+  transform: scale(1.02);
+}
+
+.new-project-card iconify-icon {
+  font-size: 64px;
+  color: #ffffff;
+}
+
+.project-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.project-details .project-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.project-details .project-date {
+  font-size: 20px;
+  font-weight: 600;
+  color: #d1d2d5;
+}
+  
+
+<!-- Top Bar Layout -->
   <header class="top-bar">
     <div class="logo-container">
       <div class="logo">
