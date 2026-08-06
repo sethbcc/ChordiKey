@@ -214,13 +214,17 @@
       display: flex;
       align-items: center;
       gap: 16px;
+      background-color: #1a1a1c;
+      padding: 12px 16px 12px 12px;
+      border-radius: 24px;
+      position: relative;
     }
 
     .new-project-card, .saved-project-card {
-      width: 140px;
-      height: 140px;
+      width: 120px;
+      height: 120px;
       background-color: #4f4f52;
-      border-radius: 20px;
+      border-radius: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -238,31 +242,86 @@
     }
 
     .new-project-card iconify-icon {
-      font-size: 64px;
+      font-size: 56px;
       color: #ffffff;
     }
 
     .saved-project-card iconify-icon {
-      font-size: 58px;
+      font-size: 52px;
       color: #6edad6;
     }
 
     .project-details {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
+      min-width: 120px;
     }
 
     .project-details .project-name {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       color: #ffffff;
     }
 
     .project-details .project-date {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
       color: #d1d2d5;
+    }
+
+    /* DELETE BUTTON */
+    .delete-project-btn {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #ff5555;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s, color 0.2s;
+      margin-left: 8px;
+    }
+
+    .delete-project-btn:hover {
+      background-color: rgba(255, 85, 85, 0.15);
+      color: #ff7777;
+    }
+
+    .delete-project-btn iconify-icon {
+      font-size: 26px;
+    }
+
+    /* --- UNIVERSAL CLOSE SUBVIEW X BUTTON --- */
+    .close-subview-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background-color: rgba(255, 255, 255, 0.12);
+      border: none;
+      outline: none;
+      color: #ffffff;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .close-subview-btn:hover {
+      background-color: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05);
+    }
+
+    .close-subview-btn iconify-icon {
+      font-size: 24px;
     }
 
     /* --- CENTERED FILE FORM CARD VIEW --- */
@@ -275,11 +334,12 @@
     }
 
     .file-form-card {
+      position: relative;
       background-color: #27272a;
       border-radius: 20px;
       width: 100%;
       max-width: 480px;
-      padding: 32px 36px;
+      padding: 36px 36px 32px 36px;
       display: flex;
       flex-direction: column;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -353,9 +413,9 @@
 
     .active-project-banner {
       position: absolute;
-      top: 24px;
-      left: 28px;
-      font-size: 22px;
+      top: 20px;
+      left: 20px;
+      font-size: 20px;
       font-weight: 800;
       color: #ffffff;
       background-color: rgba(0, 0, 0, 0.4);
@@ -483,6 +543,13 @@
         padding: 6px 12px;
       }
 
+      .close-subview-btn {
+        top: 12px;
+        right: 12px;
+        width: 34px;
+        height: 34px;
+      }
+
       .piano-keyboard-strip {
         height: 220px;
       }
@@ -572,6 +639,9 @@
         <!-- Subview B: Centered File Name Input View -->
         <div id="create-file-subview" class="file-subview-wrapper hidden">
           <div class="file-form-card">
+            <button class="close-subview-btn" id="close-file-btn" title="Close">
+              <iconify-icon icon="ic:round-close"></iconify-icon>
+            </button>
             <label class="file-form-title">Enter file name:</label>
             <input type="text" id="project-name-input" class="file-name-input" placeholder="File name">
             <button class="create-file-btn" id="submit-create-file-btn">Create file</button>
@@ -581,6 +651,10 @@
         <!-- Subview C: Piano Keyboard Editor View -->
         <div id="create-editor-subview" class="editor-subview-wrapper hidden">
           <div class="piano-editor-card">
+            <button class="close-subview-btn" id="close-editor-btn" title="Close editor">
+              <iconify-icon icon="ic:round-close"></iconify-icon>
+            </button>
+
             <div id="current-project-title" class="active-project-banner">Project: Untitled</div>
 
             <div class="piano-keyboard-strip">
@@ -621,6 +695,9 @@
     const createFileSubview = document.getElementById('create-file-subview');
     const createEditorSubview = document.getElementById('create-editor-subview');
 
+    const closeFileBtn = document.getElementById('close-file-btn');
+    const closeEditorBtn = document.getElementById('close-editor-btn');
+
     let savedProjects = JSON.parse(localStorage.getItem('chordiflip_projects')) || [];
 
     // STRICT SUBVIEW SWITCHER
@@ -635,7 +712,7 @@
     function renderProjects() {
       createMainSubview.innerHTML = '';
 
-      savedProjects.forEach(proj => {
+      savedProjects.forEach((proj) => {
         const item = document.createElement('div');
         item.className = 'project-item';
         item.innerHTML = `
@@ -646,15 +723,28 @@
             <span class="project-name">${proj.name}</span>
             <span class="project-date">${proj.date}</span>
           </div>
+          <button class="delete-project-btn" title="Delete file">
+            <iconify-icon icon="solar:trash-bin-trash-bold"></iconify-icon>
+          </button>
         `;
 
+        // Open piano editor when clicking card
         item.querySelector('.saved-project-card').addEventListener('click', () => {
           openPianoEditor(proj.name);
+        });
+
+        // Delete file logic
+        item.querySelector('.delete-project-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          savedProjects = savedProjects.filter(p => p.id !== proj.id);
+          localStorage.setItem('chordiflip_projects', JSON.stringify(savedProjects));
+          renderProjects();
         });
 
         createMainSubview.appendChild(item);
       });
 
+      // Add New Project Card
       const addCardItem = document.createElement('div');
       addCardItem.className = 'project-item';
       addCardItem.innerHTML = `
@@ -680,6 +770,16 @@
       showSubview(createEditorSubview);
     }
 
+    // Exit Button Listeners
+    closeFileBtn.addEventListener('click', () => {
+      showSubview(createMainSubview);
+    });
+
+    closeEditorBtn.addEventListener('click', () => {
+      showSubview(createMainSubview);
+    });
+
+    // Navigation Switcher
     navItems.forEach(item => {
       item.addEventListener('click', (e) => {
         e.preventDefault();
@@ -707,6 +807,7 @@
       });
     });
 
+    // Create File Submit
     submitCreateFileBtn.addEventListener('click', () => {
       const fileName = projectNameInput.value.trim() || 'Untitled Project';
       
