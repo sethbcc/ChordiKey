@@ -314,6 +314,12 @@
       height: 100%;
       border-right: 2px solid #2d2d2d;
       background-color: #ffffff;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .white-key:active, .white-key.active {
+      background-color: #e0e0e0;
     }
 
     .white-key:last-child {
@@ -329,9 +335,14 @@
       border-bottom-left-radius: 8px;
       border-bottom-right-radius: 8px;
       z-index: 2;
+      cursor: pointer;
+      user-select: none;
     }
 
-    /* Positioning black keys across 7 white keys */
+    .black-key:active, .black-key.active {
+      background-color: #333333;
+    }
+
     .black-key.k1 { left: 9.3%; }
     .black-key.k2 { left: 23.6%; }
     .black-key.k3 { left: 52.2%; }
@@ -429,21 +440,21 @@
         <div id="create-editor-subview" class="create-subview">
           <div class="piano-editor-card">
             <div class="piano-keyboard-strip">
-              <!-- 7 White Keys -->
-              <div class="white-key"></div>
-              <div class="white-key"></div>
-              <div class="white-key"></div>
-              <div class="white-key"></div>
-              <div class="white-key"></div>
-              <div class="white-key"></div>
-              <div class="white-key"></div>
+              <!-- White Keys (C4 to B4) -->
+              <div class="white-key" data-freq="261.63"></div>
+              <div class="white-key" data-freq="293.66"></div>
+              <div class="white-key" data-freq="329.63"></div>
+              <div class="white-key" data-freq="349.23"></div>
+              <div class="white-key" data-freq="392.00"></div>
+              <div class="white-key" data-freq="440.00"></div>
+              <div class="white-key" data-freq="493.88"></div>
 
-              <!-- 5 Black Keys -->
-              <div class="black-key k1"></div>
-              <div class="black-key k2"></div>
-              <div class="black-key k3"></div>
-              <div class="black-key k4"></div>
-              <div class="black-key k5"></div>
+              <!-- Black Keys (C#4, D#4, F#4, G#4, A#4) -->
+              <div class="black-key k1" data-freq="277.18"></div>
+              <div class="black-key k2" data-freq="311.13"></div>
+              <div class="black-key k3" data-freq="369.99"></div>
+              <div class="black-key k4" data-freq="415.30"></div>
+              <div class="black-key k5" data-freq="466.16"></div>
             </div>
           </div>
         </div>
@@ -451,8 +462,9 @@
     </div>
   </div>
 
-  <!-- Page Navigation JavaScript -->
+  <!-- JavaScript Engine -->
   <script>
+    // Navigation & View Routing
     const navItems = document.querySelectorAll('.nav-item');
     const pageViews = document.querySelectorAll('.page-view');
     const searchInput = document.getElementById('main-search-input');
@@ -464,16 +476,13 @@
     const createFileSubview = document.getElementById('create-file-subview');
     const createEditorSubview = document.getElementById('create-editor-subview');
 
-    // Sidebar navigation handler
     navItems.forEach(item => {
       item.addEventListener('click', (e) => {
         e.preventDefault();
 
-        // 1. Set Active Link Highlight
         navItems.forEach(nav => nav.classList.remove('active'));
         item.classList.add('active');
 
-        // 2. Switch Dynamic Page View
         const targetId = item.getAttribute('data-target');
         pageViews.forEach(view => view.classList.remove('active'));
 
@@ -482,14 +491,12 @@
           targetView.classList.add('active');
         }
 
-        // Reset Create tab subview when clicking the sidebar item
         if (targetId === 'create-view') {
           createMainSubview.classList.add('active');
           createFileSubview.classList.remove('active');
           createEditorSubview.classList.remove('active');
         }
 
-        // 3. Update Search Placeholder Text
         const newPlaceholder = item.getAttribute('data-placeholder');
         if (newPlaceholder) {
           searchInput.placeholder = newPlaceholder;
@@ -497,18 +504,55 @@
       });
     });
 
-    // Plus card click handler -> opens the "Enter file name" view
     addProjectBtn.addEventListener('click', () => {
       createMainSubview.classList.remove('active');
       createFileSubview.classList.add('active');
       createEditorSubview.classList.remove('active');
     });
 
-    // Green "Create file" button click handler -> opens the Piano Keyboard Editor view
     submitCreateFileBtn.addEventListener('click', () => {
       createMainSubview.classList.remove('active');
       createFileSubview.classList.remove('active');
       createEditorSubview.classList.add('active');
+    });
+
+    // Web Audio Synthesizer Engine
+    let audioCtx = null;
+
+    function playNote(frequency) {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      // Triangle wave creates a smooth, clear synth note
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+
+      // Attack & Smooth Exponential Decay
+      gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + 1.2);
+    }
+
+    // Attach click triggers to all keys
+    const allKeys = document.querySelectorAll('.white-key, .black-key');
+    allKeys.forEach(key => {
+      key.addEventListener('mousedown', (e) => {
+        e.stopPropagation(); // Prevent white key trigger when clicking black keys
+        const freq = parseFloat(key.getAttribute('data-freq'));
+        if (freq) playNote(freq);
+      });
     });
   </script>
 </body>
