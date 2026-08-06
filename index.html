@@ -61,8 +61,8 @@
     }
 
     .logo span {
-  font-family: 'Shrikhand', cursive !important;
-} 
+      font-family: 'Shrikhand', cursive !important;
+    } 
 
     .logo span.chord { color: #ffffff; }
     .logo span.i { color: #ffde59; }  
@@ -87,6 +87,7 @@
       border-radius: 21px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       padding: 0 16px;
     }
 
@@ -97,11 +98,17 @@
       color: #c5c6c9;
       font-size: 16px;
       font-weight: 400;
-      width: 100%;
+      width: 85%;
     }
 
     .search-bar input::placeholder {
       color: #9a9b9e;
+    }
+
+    .search-bar iconify-icon {
+      font-size: 22px;
+      color: #ffffff;
+      flex-shrink: 0;
     }
 
     /* --- MAIN APP CONTAINER --- */
@@ -120,6 +127,7 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
+      flex-shrink: 0;
     }
 
     .nav-item {
@@ -148,156 +156,73 @@
       color: #ffffff;
       flex-shrink: 0;
     }
+
+    /* --- CONTENT AREA & VISIBILITY TOGGLE --- */
+    .content-area {
+      flex: 1;
+      padding-left: 20px;
+    }
+
+    .page-view {
+      display: none;
+    }
+
+    .page-view.active {
+      display: block;
+    }
+
+    /* --- CREATE PAGE LAYOUT --- */
+    .create-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-top: 4px;
+    }
+
+    .new-project-card {
+      width: 140px;
+      height: 140px;
+      background-color: #4f4f52;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .new-project-card:hover {
+      background-color: #5d5e62;
+      transform: scale(1.02);
+    }
+
+    .new-project-card iconify-icon {
+      font-size: 64px;
+      color: #ffffff;
+    }
+
+    .project-details {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .project-details .project-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .project-details .project-date {
+      font-size: 20px;
+      font-weight: 600;
+      color: #d1d2d5;
+    }
   </style>
 </head>
 <body>
 
-/* Content Container beside Sidebar */
-.content-area {
-  flex: 1;
-  padding-left: 20px;
-}
-
-/* Page Visibility Toggle */
-.page-view {
-  display: none;
-}
-
-.page-view.active {
-  display: block;
-}
-
-/* --- CREATE PAGE LAYOUT --- */
-.create-container {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.new-project-card {
-  width: 140px;
-  height: 140px;
-  background-color: #4f4f52;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
-}
-
-.new-project-card:hover {
-  background-color: #5d5e62;
-  transform: scale(1.02);
-}
-
-.new-project-card iconify-icon {
-  font-size: 64px;
-  color: #ffffff;
-}
-
-.project-details {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.project-details .project-name {
-  font-size: 24px;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.project-details .project-date {
-  font-size: 20px;
-  font-weight: 600;
-  color: #d1d2d5;
-}
-
-<!-- Top Bar Layout -->
-<header class="top-bar">
-  <div class="logo-container">
-    <div class="logo">
-      <span class="chord">Chord</span><span class="i">i</span><span class="flip">Flip</span>
-    </div>
-  </div>
-
-  <div class="top-bar-right">
-    <div class="search-bar">
-      <!-- ID added to input for JS target -->
-      <input type="text" id="main-search-input" placeholder="Search ChordiFlip">
-      <iconify-icon icon="mingcute:search-line"></iconify-icon>
-    </div>
-  </div>
-</header>
-
-<!-- Main Area with Sidebar and Dynamic Content -->
-<div class="main-container">
-  <nav class="sidebar">
-    <a href="#" class="nav-item active" data-target="home-view" data-placeholder="Search ChordiFlip">
-      <iconify-icon icon="famicons:home"></iconify-icon>
-      <span>Home</span>
-    </a>
-    <!-- Added data attributes for navigation -->
-    <a href="#" class="nav-item" data-target="create-view" data-placeholder="Search Projects">
-      <iconify-icon icon="gridicons:create"></iconify-icon>
-      <span>Create</span>
-    </a>
-    <a href="#" class="nav-item" data-target="store-view" data-placeholder="Search Store">
-      <iconify-icon icon="material-symbols:store-rounded"></iconify-icon>
-      <span>Store</span>
-    </a>
-    <a href="#" class="nav-item" data-target="profile-view" data-placeholder="Search Profile">
-      <iconify-icon icon="gg:profile"></iconify-icon>
-      <span>Profile</span>
-    </a>
-    <a href="#" class="nav-item" data-target="friends-view" data-placeholder="Search Friends">
-      <iconify-icon icon="fa7-solid:user-friends"></iconify-icon>
-      <span>Friends</span>
-    </a>
-    <a href="#" class="nav-item" data-target="learn-view" data-placeholder="Search Lessons">
-      <iconify-icon icon="material-symbols:school-rounded"></iconify-icon>
-      <span>Learn</span>
-    </a>
-    <a href="#" class="nav-item" data-target="subscribe-view" data-placeholder="Search Plans">
-      <iconify-icon icon="streamline:subscription-cashflow-solid"></iconify-icon>
-      <span>Subscribe</span>
-    </a>
-    <a href="#" class="nav-item" data-target="settings-view" data-placeholder="Search Settings">
-      <iconify-icon icon="material-symbols:settings-rounded"></iconify-icon>
-      <span>Settings</span>
-    </a>
-    <a href="#" class="nav-item" data-target="help-view" data-placeholder="Search Help">
-      <iconify-icon icon="material-symbols:help-rounded"></iconify-icon>
-      <span>Help</span>
-    </a>
-  </nav>
-
-  <!-- Content Container -->
-  <div class="content-area">
-    <!-- Home View -->
-    <div id="home-view" class="page-view active">
-      <!-- Home Content Goes Here -->
-    </div>
-
-    <!-- Create View -->
-    <div id="create-view" class="page-view">
-      <div class="create-container">
-        <div class="new-project-card">
-          <iconify-icon icon="ic:round-add"></iconify-icon>
-        </div>
-        <div class="project-details">
-          <span class="project-name">name</span>
-          <span class="project-date">date created</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-  
-
-<!-- Top Bar Layout -->
+  <!-- Top Bar Header -->
   <header class="top-bar">
     <div class="logo-container">
       <div class="logo">
@@ -305,84 +230,105 @@
       </div>
     </div>
 
-    <!-- Floating Outer Right Bar -->
     <div class="top-bar-right">
       <div class="search-bar">
-  <input type="text" placeholder="Search ChordiFlip">
-  <iconify-icon icon="material-symbols:search-rounded"></iconify-icon>
-</div>
-
+        <input type="text" id="main-search-input" placeholder="Search ChordiFlip">
+        <iconify-icon icon="mingcute:search-line"></iconify-icon>
       </div>
     </div>
   </header>
 
-  <!-- Main Area with Floating Sidebar -->
+  <!-- Main Area with Sidebar and Views -->
   <div class="main-container">
     <nav class="sidebar">
-      <a href="#" class="nav-item active">
+      <a href="#" class="nav-item active" data-target="home-view" data-placeholder="Search ChordiFlip">
         <iconify-icon icon="famicons:home"></iconify-icon>
         <span>Home</span>
       </a>
-      <a href="#" class="nav-item">
+      <a href="#" class="nav-item" data-target="create-view" data-placeholder="Search Projects">
         <iconify-icon icon="gridicons:create"></iconify-icon>
         <span>Create</span>
       </a>
-      <a href="#" class="nav-item">
+      <a href="#" class="nav-item" data-target="store-view" data-placeholder="Search Store">
         <iconify-icon icon="material-symbols:store-rounded"></iconify-icon>
         <span>Store</span>
       </a>
-      <a href="#" class="nav-item">
+      <a href="#" class="nav-item" data-target="profile-view" data-placeholder="Search Profile">
         <iconify-icon icon="gg:profile"></iconify-icon>
         <span>Profile</span>
       </a>
-      <a href="#" class="nav-item">
+      <a href="#" class="nav-item" data-target="friends-view" data-placeholder="Search Friends">
         <iconify-icon icon="fa7-solid:user-friends"></iconify-icon>
         <span>Friends</span>
       </a>
-      <a href="#" class="nav-item">
+      <a href="#" class="nav-item" data-target="learn-view" data-placeholder="Search Lessons">
         <iconify-icon icon="material-symbols:school-rounded"></iconify-icon>
         <span>Learn</span>
       </a>
-      <a href="#" class="nav-item">
+      <a href="#" class="nav-item" data-target="subscribe-view" data-placeholder="Search Plans">
         <iconify-icon icon="streamline:subscription-cashflow-solid"></iconify-icon>
         <span>Subscribe</span>
       </a>
-      <a href="#" class="nav-item">
+      <a href="#" class="nav-item" data-target="settings-view" data-placeholder="Search Settings">
         <iconify-icon icon="material-symbols:settings-rounded"></iconify-icon>
         <span>Settings</span>
       </a>
-      <a href="#" class="nav-item">
+      <a href="#" class="nav-item" data-target="help-view" data-placeholder="Search Help">
         <iconify-icon icon="material-symbols:help-rounded"></iconify-icon>
         <span>Help</span>
       </a>
     </nav>
+
+    <!-- Content Area Container -->
+    <div class="content-area">
+      <!-- 1. Home Page View -->
+      <div id="home-view" class="page-view active"></div>
+
+      <!-- 2. Create Page View -->
+      <div id="create-view" class="page-view">
+        <div class="create-container">
+          <div class="new-project-card">
+            <iconify-icon icon="ic:round-add"></iconify-icon>
+          </div>
+          <div class="project-details">
+            <span class="project-name">name</span>
+            <span class="project-date">date created</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- 1. External Scripts & Fonts -->
-  <script src="https://code.iconify.design/..."></script>
-
-  <!-- 2. All your CSS goes here -->
-  <style>
-    /* Existing styles + New page/card styles */
-  </style>
-</head>
-<body>
-
-  <!-- 3. Top Bar Header -->
-  <header class="top-bar"> ... </header>
-
-  <!-- 4. Main Layout (Sidebar + Page Views) -->
-  <div class="main-container"> ... </div>
-
-  <!-- 5. Navigation JavaScript goes right before </body> -->
+  <!-- Page Navigation JavaScript -->
   <script>
-    // Navigation script here
-  </script>
-</body>
-</html>
+    const navItems = document.querySelectorAll('.nav-item');
+    const pageViews = document.querySelectorAll('.page-view');
+    const searchInput = document.getElementById('main-search-input');
 
+    navItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        // 1. Set Active Link Highlight
+        navItems.forEach(nav => nav.classList.remove('active'));
+        item.classList.add('active');
+
+        // 2. Switch Dynamic Page View
+        const targetId = item.getAttribute('data-target');
+        pageViews.forEach(view => view.classList.remove('active'));
+
+        const targetView = document.getElementById(targetId);
+        if (targetView) {
+          targetView.classList.add('active');
+        }
+
+        // 3. Update Search Placeholder Text
+        const newPlaceholder = item.getAttribute('data-placeholder');
+        if (newPlaceholder) {
+          searchInput.placeholder = newPlaceholder;
+        }
+      });
+    });
+  </script>
 </body>
 </html>
