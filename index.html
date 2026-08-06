@@ -185,12 +185,20 @@
     }
 
     .create-container {
+      display: flex;
+      flex-wrap: wrap;
       align-items: flex-start;
-      gap: 16px;
+      gap: 28px;
       padding-top: 4px;
     }
 
-    .new-project-card {
+    .project-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .new-project-card, .saved-project-card {
       width: 140px;
       height: 140px;
       background-color: #4f4f52;
@@ -200,10 +208,20 @@
       justify-content: center;
       cursor: pointer;
       transition: transform 0.2s, background-color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .saved-project-card {
+      background-color: #27272a;
     }
 
     .new-project-card:hover {
       background-color: #5d5e62;
+      transform: scale(1.02);
+    }
+
+    .saved-project-card:hover {
+      background-color: #3f4045;
       transform: scale(1.02);
     }
 
@@ -212,11 +230,15 @@
       color: #ffffff;
     }
 
+    .saved-project-card iconify-icon {
+      font-size: 58px;
+      color: #6edad6;
+    }
+
     .project-details {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      padding-top: 8px;
     }
 
     .project-details .project-name {
@@ -291,14 +313,28 @@
 
     /* --- PIANO EDITOR VIEW --- */
     .piano-editor-card {
+      position: relative;
       background-color: #535353;
       border-radius: 20px;
       width: 100%;
       height: calc(100vh - 100px);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       overflow: hidden;
+    }
+
+    .active-project-banner {
+      position: absolute;
+      top: 24px;
+      left: 28px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      background-color: rgba(0, 0, 0, 0.4);
+      padding: 8px 18px;
+      border-radius: 12px;
     }
 
     .piano-keyboard-strip {
@@ -416,22 +452,16 @@
 
       <!-- 2. Create Page View -->
       <div id="create-view" class="page-view">
-        <!-- Subview A: Initial Create Card -->
+        <!-- Subview A: Dynamic Project List View -->
         <div id="create-main-subview" class="create-container create-subview active">
-          <div class="new-project-card" id="add-project-btn">
-            <iconify-icon icon="ic:round-add"></iconify-icon>
-          </div>
-          <div class="project-details">
-            <span class="project-name">name</span>
-            <span class="project-date">date created</span>
-          </div>
+          <!-- Rendered dynamically by JavaScript -->
         </div>
 
-        <!-- Subview B: Form Card -->
+        <!-- Subview B: File Name Input View -->
         <div id="create-file-subview" class="create-subview">
           <div class="file-form-card">
             <label class="file-form-title">Enter file name:</label>
-            <input type="text" class="file-name-input" placeholder="File name">
+            <input type="text" id="project-name-input" class="file-name-input" placeholder="File name">
             <button class="create-file-btn" id="submit-create-file-btn">Create file</button>
           </div>
         </div>
@@ -439,6 +469,8 @@
         <!-- Subview C: Piano Keyboard Editor View -->
         <div id="create-editor-subview" class="create-subview">
           <div class="piano-editor-card">
+            <div id="current-project-title" class="active-project-banner">Project: Untitled</div>
+
             <div class="piano-keyboard-strip">
               <!-- White Keys (C4 to B4) -->
               <div class="white-key" data-freq="261.63"></div>
@@ -462,20 +494,82 @@
     </div>
   </div>
 
-  <!-- JavaScript Engine -->
+  <!-- JavaScript App Logic & Persistence Engine -->
   <script>
-    // Navigation & View Routing
+    // Navigation Targets
     const navItems = document.querySelectorAll('.nav-item');
     const pageViews = document.querySelectorAll('.page-view');
     const searchInput = document.getElementById('main-search-input');
 
-    const addProjectBtn = document.getElementById('add-project-btn');
     const submitCreateFileBtn = document.getElementById('submit-create-file-btn');
+    const projectNameInput = document.getElementById('project-name-input');
+    const currentProjectTitle = document.getElementById('current-project-title');
     
     const createMainSubview = document.getElementById('create-main-subview');
     const createFileSubview = document.getElementById('create-file-subview');
     const createEditorSubview = document.getElementById('create-editor-subview');
 
+    // Load saved projects array from browser storage
+    let savedProjects = JSON.parse(localStorage.getItem('chordiflip_projects')) || [];
+
+    // Render projects list inside the "Create" view
+    function renderProjects() {
+      createMainSubview.innerHTML = '';
+
+      // Render all saved project cards
+      savedProjects.forEach(proj => {
+        const item = document.createElement('div');
+        item.className = 'project-item';
+        item.innerHTML = `
+          <div class="saved-project-card" data-id="${proj.id}">
+            <iconify-icon icon="solar:music-note-bold"></iconify-icon>
+          </div>
+          <div class="project-details">
+            <span class="project-name">${proj.name}</span>
+            <span class="project-date">${proj.date}</span>
+          </div>
+        `;
+
+        // Click on saved project -> open its piano session
+        item.querySelector('.saved-project-card').addEventListener('click', () => {
+          openPianoEditor(proj.name);
+        });
+
+        createMainSubview.appendChild(item);
+      });
+
+      // Render the "Plus" button card to create another file
+      const addCardItem = document.createElement('div');
+      addCardItem.className = 'project-item';
+      addCardItem.innerHTML = `
+        <div class="new-project-card" id="add-project-btn">
+          <iconify-icon icon="ic:round-add"></iconify-icon>
+        </div>
+        <div class="project-details">
+          <span class="project-name">name</span>
+          <span class="project-date">date created</span>
+        </div>
+      `;
+
+      addCardItem.querySelector('#add-project-btn').addEventListener('click', () => {
+        projectNameInput.value = '';
+        createMainSubview.classList.remove('active');
+        createFileSubview.classList.add('active');
+        createEditorSubview.classList.remove('active');
+      });
+
+      createMainSubview.appendChild(addCardItem);
+    }
+
+    // Launch piano editor
+    function openPianoEditor(title) {
+      currentProjectTitle.textContent = `Project: ${title}`;
+      createMainSubview.classList.remove('active');
+      createFileSubview.classList.remove('active');
+      createEditorSubview.classList.add('active');
+    }
+
+    // Sidebar navigation logic
     navItems.forEach(item => {
       item.addEventListener('click', (e) => {
         e.preventDefault();
@@ -492,6 +586,7 @@
         }
 
         if (targetId === 'create-view') {
+          renderProjects();
           createMainSubview.classList.add('active');
           createFileSubview.classList.remove('active');
           createEditorSubview.classList.remove('active');
@@ -504,16 +599,27 @@
       });
     });
 
-    addProjectBtn.addEventListener('click', () => {
-      createMainSubview.classList.remove('active');
-      createFileSubview.classList.add('active');
-      createEditorSubview.classList.remove('active');
-    });
-
+    // Green "Create file" button handler
     submitCreateFileBtn.addEventListener('click', () => {
-      createMainSubview.classList.remove('active');
-      createFileSubview.classList.remove('active');
-      createEditorSubview.classList.add('active');
+      const fileName = projectNameInput.value.trim() || 'Untitled Project';
+      
+      const formattedDate = new Date().toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+
+      const newProject = {
+        id: Date.now(),
+        name: fileName,
+        date: formattedDate
+      };
+
+      savedProjects.push(newProject);
+      localStorage.setItem('chordiflip_projects', JSON.stringify(savedProjects));
+
+      renderProjects();
+      openPianoEditor(fileName);
     });
 
     // Web Audio Synthesizer Engine
@@ -530,11 +636,9 @@
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
 
-      // Triangle wave creates a smooth, clear synth note
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
 
-      // Attack & Smooth Exponential Decay
       gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
 
@@ -545,15 +649,18 @@
       osc.stop(audioCtx.currentTime + 1.2);
     }
 
-    // Attach click triggers to all keys
+    // Attach sound triggers to keys
     const allKeys = document.querySelectorAll('.white-key, .black-key');
     allKeys.forEach(key => {
       key.addEventListener('mousedown', (e) => {
-        e.stopPropagation(); // Prevent white key trigger when clicking black keys
+        e.stopPropagation();
         const freq = parseFloat(key.getAttribute('data-freq'));
         if (freq) playNote(freq);
       });
     });
+
+    // Initial render call
+    renderProjects();
   </script>
 </body>
 </html>
