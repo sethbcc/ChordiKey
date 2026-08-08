@@ -22,14 +22,17 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    body {
+    html, body {
+      width: 100%;
+      height: 100%;
       background-color: #000000;
       color: #ffffff;
-      height: 100vh;
-      height: 100dvh;
+      overflow: hidden;
+    }
+
+    body {
       display: flex;
       flex-direction: column;
-      overflow: hidden;
       padding: 12px 12px 0 12px;
     }
 
@@ -84,13 +87,15 @@
       display: flex;
       align-items: center;
       padding: 0 10px;
+      min-width: 0;
     }
 
     /* --- INNER SEARCH PILL BOX --- */
     .search-bar {
       background-color: #3f4045;
       height: 42px;
-      width: 380px;
+      width: 100%;
+      max-width: 380px;
       border-radius: 21px;
       display: flex;
       align-items: center;
@@ -102,9 +107,9 @@
       background: transparent;
       border: none;
       outline: none;
-      color: #c5c6c9;
+      color: #ffffff;
       font-size: 16px;
-      font-weight: 400;
+      font-weight: 600;
       width: 85%;
     }
 
@@ -125,6 +130,7 @@
       padding: 12px 0;
       gap: 12px;
       min-height: 0;
+      overflow: hidden;
     }
 
     /* --- FLOATING SIDEBAR --- */
@@ -138,6 +144,7 @@
       gap: 4px;
       flex-shrink: 0;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .nav-item {
@@ -173,6 +180,7 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
+      min-width: 0;
       position: relative;
     }
 
@@ -180,6 +188,7 @@
       display: none;
       height: 100%;
       width: 100%;
+      min-height: 0;
     }
 
     .page-view.active {
@@ -192,9 +201,10 @@
       display: flex;
       flex-wrap: wrap;
       align-content: flex-start;
-      gap: 24px;
+      gap: 20px;
       padding: 4px 12px 24px 0;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       height: 100%;
       width: 100%;
       scrollbar-width: thin;
@@ -295,7 +305,7 @@
       font-size: 26px;
     }
 
-    /* --- RECOLORED RED CLOSE SUBVIEW X BUTTON --- */
+    /* --- RED CLOSE SUBVIEW BUTTON --- */
     .close-subview-btn {
       position: absolute;
       top: 16px;
@@ -313,6 +323,7 @@
       cursor: pointer;
       z-index: 10;
       transition: background-color 0.2s, transform 0.1s;
+      box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
     }
 
     .close-subview-btn:hover {
@@ -440,6 +451,7 @@
       background-color: #ffffff;
       cursor: pointer;
       user-select: none;
+      touch-action: manipulation;
     }
 
     .white-key:active, .white-key.active {
@@ -461,6 +473,7 @@
       z-index: 2;
       cursor: pointer;
       user-select: none;
+      touch-action: manipulation;
     }
 
     .black-key:active, .black-key.active {
@@ -549,22 +562,31 @@
       background-color: #ff1a0c;
     }
 
-    /* MOBILE RESPONSIVE RULES */
+    /* TABLET & IPAD RESPONSIVE RULES (Up to 1024px) */
+    @media (max-width: 1024px) {
+      .logo-container { width: 170px; }
+      .logo { font-size: 24px; }
+      .sidebar { width: 72px; padding: 10px 6px; align-items: center; }
+      .nav-item { padding: 10px; border-radius: 12px; justify-content: center; }
+      .nav-item span { display: none; }
+      .nav-item iconify-icon { font-size: 26px; }
+      .create-container { padding-right: 4px; justify-content: flex-start; }
+    }
+
+    /* MOBILE PORTRAIT RULES */
     @media (max-width: 768px) and (orientation: portrait) {
       body { padding: 8px; }
       .top-bar { height: 50px; gap: 8px; }
-      .logo-container { width: 140px; }
-      .logo { font-size: 20px; }
+      .logo-container { width: 130px; }
+      .logo { font-size: 19px; }
       .search-bar { width: 100%; height: 36px; padding: 0 10px; }
       .search-bar input { font-size: 14px; }
       .main-container { flex-direction: column-reverse; padding: 8px 0 0 0; gap: 8px; }
       .sidebar { width: 100%; height: 56px; flex-direction: row; justify-content: space-between; align-items: center; padding: 6px 8px; border-radius: 14px; overflow-x: auto; flex-shrink: 0; }
       .nav-item { padding: 8px; border-radius: 10px; }
-      .nav-item span { display: none; }
-      .nav-item iconify-icon { font-size: 24px; }
       .active-project-banner { top: 12px; left: 12px; font-size: 15px; padding: 6px 12px; }
       .close-subview-btn { top: 12px; right: 12px; width: 34px; height: 34px; }
-      .piano-keyboard-strip { height: 220px; }
+      .piano-keyboard-strip { height: 200px; }
       .file-form-card { width: 92%; padding: 24px; }
       .create-file-btn { width: 100%; font-size: 18px; }
     }
@@ -697,7 +719,7 @@
     </div>
   </div>
 
-  <!-- External JavaScript File Link -->
+  <!-- External JavaScript Link -->
   <script src="script.js"></script>
 </body>
 </html>
