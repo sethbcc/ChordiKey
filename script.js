@@ -32,11 +32,15 @@ function showSubview(targetSubview) {
   targetSubview.classList.remove('hidden');
 }
 
-// --- PROJECT LIST RENDERER ---
-function renderProjects() {
+// --- PROJECT LIST RENDERER WITH LIVE SEARCH FILTER ---
+function renderProjects(filterTerm = '') {
   createMainSubview.innerHTML = '';
 
-  savedProjects.forEach((proj) => {
+  const filteredProjects = savedProjects.filter(proj => 
+    proj.name.toLowerCase().includes(filterTerm.toLowerCase().trim())
+  );
+
+  filteredProjects.forEach((proj) => {
     const item = document.createElement('div');
     item.className = 'project-item';
     item.innerHTML = `
@@ -68,7 +72,7 @@ function renderProjects() {
     createMainSubview.appendChild(item);
   });
 
-  // Add New Project Card
+  // Always show "Add New Project Card"
   const addCardItem = document.createElement('div');
   addCardItem.className = 'project-item';
   addCardItem.innerHTML = `
@@ -94,6 +98,27 @@ function openPianoEditor(title) {
   showSubview(createEditorSubview);
 }
 
+// --- SEARCH BAR INPUT & ENTER KEY LISTENERS ---
+searchInput.addEventListener('input', (e) => {
+  renderProjects(e.target.value);
+});
+
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    renderProjects(searchInput.value);
+    searchInput.blur(); // Closes iPad/mobile keyboard
+  }
+});
+
+// --- ENTER KEY FOR FILE CREATION INPUT ---
+projectNameInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    submitCreateFileBtn.click();
+  }
+});
+
 // --- DELETE MODAL HANDLERS ---
 cancelDeleteBtn.addEventListener('click', () => {
   projectToDeleteId = null;
@@ -106,7 +131,7 @@ confirmDeleteBtn.addEventListener('click', () => {
     localStorage.setItem('chordikey_projects', JSON.stringify(savedProjects));
     projectToDeleteId = null;
     deleteModal.classList.add('hidden');
-    renderProjects();
+    renderProjects(searchInput.value);
   }
 });
 
@@ -136,7 +161,7 @@ navItems.forEach(item => {
     }
 
     if (targetId === 'create-view') {
-      renderProjects();
+      renderProjects(searchInput.value);
       showSubview(createMainSubview);
     }
 
@@ -166,7 +191,8 @@ submitCreateFileBtn.addEventListener('click', () => {
   savedProjects.push(newProject);
   localStorage.setItem('chordikey_projects', JSON.stringify(savedProjects));
 
-  renderProjects();
+  projectNameInput.blur(); // Closes iPad/mobile keyboard
+  renderProjects(searchInput.value);
   openPianoEditor(fileName);
 });
 
@@ -202,8 +228,9 @@ function playNote(frequency) {
 const allKeys = document.querySelectorAll('.white-key, .black-key');
 
 function triggerKey(e, key) {
-  e.stopPropagation();
-  e.preventDefault();
+  if (e.type === 'touchstart') {
+    e.preventDefault(); // Prevents touch ghost clicks on tablets without freezing scrolling outside keys
+  }
   const freq = parseFloat(key.getAttribute('data-freq'));
   if (freq) playNote(freq);
 }
