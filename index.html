@@ -295,12 +295,12 @@
       font-size: 26px;
     }
 
-    /* --- UNIVERSAL CLOSE SUBVIEW X BUTTON --- */
+    /* --- RECOLORED RED CLOSE SUBVIEW X BUTTON --- */
     .close-subview-btn {
       position: absolute;
       top: 16px;
       right: 16px;
-      background-color: rgba(255, 255, 255, 0.12);
+      background-color: #ff3b30;
       border: none;
       outline: none;
       color: #ffffff;
@@ -313,11 +313,12 @@
       cursor: pointer;
       z-index: 10;
       transition: background-color 0.2s, transform 0.1s;
+      box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
     }
 
     .close-subview-btn:hover {
-      background-color: rgba(255, 255, 255, 0.25);
-      transform: scale(1.05);
+      background-color: #ff1a0c;
+      transform: scale(1.08);
     }
 
     .close-subview-btn iconify-icon {
@@ -473,96 +474,100 @@
     .black-key.k4 { left: 66.5%; }
     .black-key.k5 { left: 80.8%; }
 
-    /* =========================================================
-       MOBILE RESPONSIVE RULES
-       ========================================================= */
+    /* --- CONFIRM DELETE MODAL --- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
 
+    .modal-card {
+      background-color: #27272a;
+      border-radius: 20px;
+      padding: 28px 28px 24px 28px;
+      width: 90%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      border: 1px solid #3f4045;
+    }
+
+    .modal-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .modal-text {
+      font-size: 16px;
+      color: #d1d2d5;
+      line-height: 1.4;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .modal-btn {
+      padding: 10px 20px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s, background-color 0.2s;
+    }
+
+    .cancel-btn {
+      background-color: #4b4c50;
+      color: #ffffff;
+    }
+
+    .cancel-btn:hover {
+      background-color: #5c5d62;
+    }
+
+    .confirm-delete-btn {
+      background-color: #ff3b30;
+      color: #ffffff;
+    }
+
+    .confirm-delete-btn:hover {
+      background-color: #ff1a0c;
+    }
+
+    /* MOBILE RESPONSIVE RULES */
     @media (max-width: 768px) and (orientation: portrait) {
-      body {
-        padding: 8px;
-      }
-
-      .top-bar {
-        height: 50px;
-        gap: 8px;
-      }
-
-      .logo-container {
-        width: 140px;
-      }
-
-      .logo {
-        font-size: 20px;
-      }
-
-      .search-bar {
-        width: 100%;
-        height: 36px;
-        padding: 0 10px;
-      }
-
-      .search-bar input {
-        font-size: 14px;
-      }
-
-      .main-container {
-        flex-direction: column-reverse;
-        padding: 8px 0 0 0;
-        gap: 8px;
-      }
-
-      .sidebar {
-        width: 100%;
-        height: 56px;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 6px 8px;
-        border-radius: 14px;
-        overflow-x: auto;
-        flex-shrink: 0;
-      }
-
-      .nav-item {
-        padding: 8px;
-        border-radius: 10px;
-      }
-
-      .nav-item span {
-        display: none;
-      }
-
-      .nav-item iconify-icon {
-        font-size: 24px;
-      }
-
-      .active-project-banner {
-        top: 12px;
-        left: 12px;
-        font-size: 15px;
-        padding: 6px 12px;
-      }
-
-      .close-subview-btn {
-        top: 12px;
-        right: 12px;
-        width: 34px;
-        height: 34px;
-      }
-
-      .piano-keyboard-strip {
-        height: 220px;
-      }
-
-      .file-form-card {
-        width: 92%;
-        padding: 24px;
-      }
-
-      .create-file-btn {
-        width: 100%;
-        font-size: 18px;
-      }
+      body { padding: 8px; }
+      .top-bar { height: 50px; gap: 8px; }
+      .logo-container { width: 140px; }
+      .logo { font-size: 20px; }
+      .search-bar { width: 100%; height: 36px; padding: 0 10px; }
+      .search-bar input { font-size: 14px; }
+      .main-container { flex-direction: column-reverse; padding: 8px 0 0 0; gap: 8px; }
+      .sidebar { width: 100%; height: 56px; flex-direction: row; justify-content: space-between; align-items: center; padding: 6px 8px; border-radius: 14px; overflow-x: auto; flex-shrink: 0; }
+      .nav-item { padding: 8px; border-radius: 10px; }
+      .nav-item span { display: none; }
+      .nav-item iconify-icon { font-size: 24px; }
+      .active-project-banner { top: 12px; left: 12px; font-size: 15px; padding: 6px 12px; }
+      .close-subview-btn { top: 12px; right: 12px; width: 34px; height: 34px; }
+      .piano-keyboard-strip { height: 220px; }
+      .file-form-card { width: 92%; padding: 24px; }
+      .create-file-btn { width: 100%; font-size: 18px; }
     }
   </style>
 </head>
@@ -681,197 +686,19 @@
     </div>
   </div>
 
-  <!-- JavaScript App Logic -->
-  <script>
-    const navItems = document.querySelectorAll('.nav-item');
-    const pageViews = document.querySelectorAll('.page-view');
-    const searchInput = document.getElementById('main-search-input');
+  <!-- Are You Sure Delete Confirmation Modal -->
+  <div id="delete-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-title">Delete File?</div>
+      <div class="modal-text" id="delete-modal-text">Are you sure you want to delete this file? This action cannot be undone.</div>
+      <div class="modal-buttons">
+        <button id="cancel-delete-btn" class="modal-btn cancel-btn">Cancel</button>
+        <button id="confirm-delete-btn" class="modal-btn confirm-delete-btn">Delete</button>
+      </div>
+    </div>
+  </div>
 
-    const submitCreateFileBtn = document.getElementById('submit-create-file-btn');
-    const projectNameInput = document.getElementById('project-name-input');
-    const currentProjectTitle = document.getElementById('current-project-title');
-    
-    const createMainSubview = document.getElementById('create-main-subview');
-    const createFileSubview = document.getElementById('create-file-subview');
-    const createEditorSubview = document.getElementById('create-editor-subview');
-
-    const closeFileBtn = document.getElementById('close-file-btn');
-    const closeEditorBtn = document.getElementById('close-editor-btn');
-
-    let savedProjects = JSON.parse(localStorage.getItem('chordikey_projects')) || [];
-
-    // STRICT SUBVIEW SWITCHER
-    function showSubview(targetSubview) {
-      createMainSubview.classList.add('hidden');
-      createFileSubview.classList.add('hidden');
-      createEditorSubview.classList.add('hidden');
-
-      targetSubview.classList.remove('hidden');
-    }
-
-    function renderProjects() {
-      createMainSubview.innerHTML = '';
-
-      savedProjects.forEach((proj) => {
-        const item = document.createElement('div');
-        item.className = 'project-item';
-        item.innerHTML = `
-          <div class="saved-project-card">
-            <iconify-icon icon="solar:music-note-bold"></iconify-icon>
-          </div>
-          <div class="project-details">
-            <span class="project-name">${proj.name}</span>
-            <span class="project-date">${proj.date}</span>
-          </div>
-          <button class="delete-project-btn" title="Delete file">
-            <iconify-icon icon="solar:trash-bin-trash-bold"></iconify-icon>
-          </button>
-        `;
-
-        // Open piano editor when clicking card
-        item.querySelector('.saved-project-card').addEventListener('click', () => {
-          openPianoEditor(proj.name);
-        });
-
-        // Delete file logic
-        item.querySelector('.delete-project-btn').addEventListener('click', (e) => {
-          e.stopPropagation();
-          savedProjects = savedProjects.filter(p => p.id !== proj.id);
-          localStorage.setItem('chordikey_projects', JSON.stringify(savedProjects));
-          renderProjects();
-        });
-
-        createMainSubview.appendChild(item);
-      });
-
-      // Add New Project Card
-      const addCardItem = document.createElement('div');
-      addCardItem.className = 'project-item';
-      addCardItem.innerHTML = `
-        <div class="new-project-card" id="add-project-btn">
-          <iconify-icon icon="ic:round-add"></iconify-icon>
-        </div>
-        <div class="project-details">
-          <span class="project-name">name</span>
-          <span class="project-date">date created</span>
-        </div>
-      `;
-
-      addCardItem.querySelector('#add-project-btn').addEventListener('click', () => {
-        projectNameInput.value = '';
-        showSubview(createFileSubview);
-      });
-
-      createMainSubview.appendChild(addCardItem);
-    }
-
-    function openPianoEditor(title) {
-      currentProjectTitle.textContent = `Project: ${title}`;
-      showSubview(createEditorSubview);
-    }
-
-    // Exit Button Listeners
-    closeFileBtn.addEventListener('click', () => {
-      showSubview(createMainSubview);
-    });
-
-    closeEditorBtn.addEventListener('click', () => {
-      showSubview(createMainSubview);
-    });
-
-    // Navigation Switcher
-    navItems.forEach(item => {
-      item.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        navItems.forEach(nav => nav.classList.remove('active'));
-        item.classList.add('active');
-
-        const targetId = item.getAttribute('data-target');
-        pageViews.forEach(view => view.classList.remove('active'));
-
-        const targetView = document.getElementById(targetId);
-        if (targetView) {
-          targetView.classList.add('active');
-        }
-
-        if (targetId === 'create-view') {
-          renderProjects();
-          showSubview(createMainSubview);
-        }
-
-        const newPlaceholder = item.getAttribute('data-placeholder');
-        if (newPlaceholder) {
-          searchInput.placeholder = newPlaceholder;
-        }
-      });
-    });
-
-    // Create File Submit
-    submitCreateFileBtn.addEventListener('click', () => {
-      const fileName = projectNameInput.value.trim() || 'Untitled Project';
-      
-      const formattedDate = new Date().toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
-
-      const newProject = {
-        id: Date.now(),
-        name: fileName,
-        date: formattedDate
-      };
-
-      savedProjects.push(newProject);
-      localStorage.setItem('chordikey_projects', JSON.stringify(savedProjects));
-
-      renderProjects();
-      openPianoEditor(fileName);
-    });
-
-    // Web Audio Synthesizer Engine
-    let audioCtx = null;
-
-    function playNote(frequency) {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-
-      gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start();
-      osc.stop(audioCtx.currentTime + 1.2);
-    }
-
-    const allKeys = document.querySelectorAll('.white-key, .black-key');
-    
-    function triggerKey(e, key) {
-      e.stopPropagation();
-      e.preventDefault();
-      const freq = parseFloat(key.getAttribute('data-freq'));
-      if (freq) playNote(freq);
-    }
-
-    allKeys.forEach(key => {
-      key.addEventListener('touchstart', (e) => triggerKey(e, key), { passive: false });
-      key.addEventListener('mousedown', (e) => triggerKey(e, key));
-    });
-
-    renderProjects();
-  </script>
+  <!-- External JavaScript File Link -->
+  <script src="script.js"></script>
 </body>
 </html>
