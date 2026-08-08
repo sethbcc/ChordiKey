@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ChordiFlip UI</title>
+  <title>ChordiKey UI</title>
   
   <!-- Iconify Script -->
   <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
@@ -73,7 +73,7 @@
 
     .logo span.chord { color: #ffffff; }
     .logo span.i { color: #ffde59; }  
-    .logo span.flip { color: #6edad6; }
+    .logo span.key { color: #6edad6; }
 
     /* --- FLOATING OUTER RIGHT BAR --- */
     .top-bar-right {
@@ -572,13 +572,13 @@
   <header class="top-bar">
     <div class="logo-container">
       <div class="logo">
-        <span class="chord">Chord</span><span class="i">i</span><span class="flip">Flip</span>
+        <span class="chord">Chord</span><span class="i">i</span><span class="key">Key</span>
       </div>
     </div>
 
     <div class="top-bar-right">
       <div class="search-bar">
-        <input type="text" id="main-search-input" placeholder="Search ChordiFlip">
+        <input type="text" id="main-search-input" placeholder="Search ChordiKey">
         <iconify-icon icon="mingcute:search-line"></iconify-icon>
       </div>
     </div>
@@ -587,7 +587,7 @@
   <!-- Main Area with Sidebar and Views -->
   <div class="main-container">
     <nav class="sidebar">
-      <a href="#" class="nav-item active" data-target="home-view" data-placeholder="Search ChordiFlip">
+      <a href="#" class="nav-item active" data-target="home-view" data-placeholder="Search ChordiKey">
         <iconify-icon icon="famicons:home"></iconify-icon>
         <span>Home</span>
       </a>
@@ -698,7 +698,7 @@
     const closeFileBtn = document.getElementById('close-file-btn');
     const closeEditorBtn = document.getElementById('close-editor-btn');
 
-    let savedProjects = JSON.parse(localStorage.getItem('chordiflip_projects')) || [];
+    let savedProjects = JSON.parse(localStorage.getItem('chordikey_projects')) || [];
 
     // STRICT SUBVIEW SWITCHER
     function showSubview(targetSubview) {
@@ -737,7 +737,7 @@
         item.querySelector('.delete-project-btn').addEventListener('click', (e) => {
           e.stopPropagation();
           savedProjects = savedProjects.filter(p => p.id !== proj.id);
-          localStorage.setItem('chordiflip_projects', JSON.stringify(savedProjects));
+          localStorage.setItem('chordikey_projects', JSON.stringify(savedProjects));
           renderProjects();
         });
 
@@ -824,7 +824,7 @@
       };
 
       savedProjects.push(newProject);
-      localStorage.setItem('chordiflip_projects', JSON.stringify(savedProjects));
+      localStorage.setItem('chordikey_projects', JSON.stringify(savedProjects));
 
       renderProjects();
       openPianoEditor(fileName);
