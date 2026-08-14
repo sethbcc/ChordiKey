@@ -7,6 +7,10 @@
   
   <!-- Iconify Script -->
   <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+
+  <!-- Firebase SDKs for Google Authentication -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,12 +40,11 @@
       padding: 12px 12px 0 12px;
     }
 
-    /* --- STRICT HIDDEN UTILITY --- */
     .hidden {
       display: none !important;
     }
 
-    /* --- MAIN TOP BAR HEADER --- */
+    /* --- TOP BAR --- */
     .top-bar {
       display: flex;
       align-items: center;
@@ -51,7 +54,6 @@
       flex-shrink: 0;
     }
 
-    /* --- LOGO CONTAINER --- */
     .logo-container {
       width: 220px;
       height: 100%;
@@ -70,15 +72,10 @@
       letter-spacing: 0;
     }
 
-    .logo span {
-      font-family: 'Shrikhand', cursive !important;
-    } 
-
     .logo span.chord { color: #ffffff; }
     .logo span.i { color: #ffde59; }  
     .logo span.key { color: #6edad6; }
 
-    /* --- FLOATING OUTER RIGHT BAR --- */
     .top-bar-right {
       flex: 1;
       height: 100%;
@@ -90,7 +87,6 @@
       min-width: 0;
     }
 
-    /* --- INNER SEARCH PILL BOX --- */
     .search-bar {
       background-color: #3f4045;
       height: 42px;
@@ -123,7 +119,7 @@
       flex-shrink: 0;
     }
 
-    /* --- MAIN APP CONTAINER --- */
+    /* --- MAIN APP LAYOUT --- */
     .main-container {
       display: flex;
       flex: 1;
@@ -133,7 +129,6 @@
       overflow: hidden;
     }
 
-    /* --- FLOATING SIDEBAR --- */
     .sidebar {
       width: 196px;
       background-color: #2c2d30;
@@ -160,21 +155,10 @@
       transition: background 0.2s;
     }
 
-    .nav-item:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
+    .nav-item:hover { background-color: rgba(255, 255, 255, 0.1); }
+    .nav-item.active { background-color: #6c6d70; }
+    .nav-item iconify-icon { font-size: 22px; color: #ffffff; flex-shrink: 0; }
 
-    .nav-item.active {
-      background-color: #6c6d70;
-    }
-
-    .nav-item iconify-icon {
-      font-size: 22px;
-      color: #ffffff;
-      flex-shrink: 0;
-    }
-
-    /* --- CONTENT AREA --- */
     .content-area {
       flex: 1;
       display: flex;
@@ -196,7 +180,7 @@
       flex-direction: column;
     }
 
-    /* --- SCROLLABLE CREATE CONTAINER --- */
+    /* --- CREATE PAGE CARDS --- */
     .create-container {
       display: flex;
       flex-wrap: wrap;
@@ -207,17 +191,6 @@
       -webkit-overflow-scrolling: touch;
       height: 100%;
       width: 100%;
-      scrollbar-width: thin;
-      scrollbar-color: #4f4f52 transparent;
-    }
-
-    .create-container::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .create-container::-webkit-scrollbar-thumb {
-      background-color: #4f4f52;
-      border-radius: 10px;
     }
 
     .project-item {
@@ -239,27 +212,14 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: transform 0.2s, background-color 0.2s;
+      transition: transform 0.2s;
       flex-shrink: 0;
     }
 
-    .saved-project-card {
-      background-color: #27272a;
-    }
-
-    .new-project-card:hover, .saved-project-card:hover {
-      transform: scale(1.02);
-    }
-
-    .new-project-card iconify-icon {
-      font-size: 56px;
-      color: #ffffff;
-    }
-
-    .saved-project-card iconify-icon {
-      font-size: 52px;
-      color: #6edad6;
-    }
+    .saved-project-card { background-color: #27272a; }
+    .new-project-card:hover, .saved-project-card:hover { transform: scale(1.02); }
+    .new-project-card iconify-icon { font-size: 56px; color: #ffffff; }
+    .saved-project-card iconify-icon { font-size: 52px; color: #6edad6; }
 
     .project-details {
       display: flex;
@@ -268,19 +228,9 @@
       min-width: 120px;
     }
 
-    .project-details .project-name {
-      font-size: 22px;
-      font-weight: 700;
-      color: #ffffff;
-    }
+    .project-details .project-name { font-size: 22px; font-weight: 700; color: #ffffff; }
+    .project-details .project-date { font-size: 18px; font-weight: 600; color: #d1d2d5; }
 
-    .project-details .project-date {
-      font-size: 18px;
-      font-weight: 600;
-      color: #d1d2d5;
-    }
-
-    /* DELETE BUTTON */
     .delete-project-btn {
       background: transparent;
       border: none;
@@ -289,23 +239,86 @@
       cursor: pointer;
       padding: 8px;
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background-color 0.2s, color 0.2s;
       margin-left: 8px;
     }
 
-    .delete-project-btn:hover {
-      background-color: rgba(255, 85, 85, 0.15);
-      color: #ff7777;
+    .delete-project-btn iconify-icon { font-size: 26px; }
+
+    /* --- PROFILE SECTION STYLING --- */
+    .profile-card {
+      background-color: #27272a;
+      border-radius: 24px;
+      padding: 36px 28px;
+      max-width: 440px;
+      width: 100%;
+      margin: auto;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .delete-project-btn iconify-icon {
-      font-size: 26px;
+    .profile-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
     }
 
-    /* --- RED CLOSE SUBVIEW BUTTON --- */
+    .profile-avatar-icon { font-size: 80px; color: #6edad6; }
+    .user-avatar-img { width: 84px; height: 84px; border-radius: 50%; border: 3px solid #6edad6; object-fit: cover; }
+
+    .profile-card h2 { font-size: 24px; font-weight: 800; color: #ffffff; }
+    .profile-card p { font-size: 15px; color: #b0b1b5; line-height: 1.4; }
+
+    .google-auth-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background-color: #ffffff;
+      color: #000000;
+      border: none;
+      outline: none;
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+      width: 100%;
+      max-width: 280px;
+      margin-top: 8px;
+    }
+
+    .google-auth-btn:hover { background-color: #f1f1f1; transform: scale(1.02); }
+    .google-auth-btn iconify-icon { font-size: 22px; }
+
+    .google-logout-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background-color: #ff3b30;
+      color: #ffffff;
+      border: none;
+      outline: none;
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s;
+      width: 100%;
+      max-width: 280px;
+      margin-top: 8px;
+    }
+
+    .google-logout-btn:hover { background-color: #ff1a0c; transform: scale(1.02); }
+
+    /* --- FORM & EDITOR SUBVIEWS --- */
     .close-subview-btn {
       position: absolute;
       top: 16px;
@@ -322,273 +335,58 @@
       justify-content: center;
       cursor: pointer;
       z-index: 10;
-      transition: background-color 0.2s, transform 0.1s;
-      box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
     }
 
-    .close-subview-btn:hover {
-      background-color: #ff1a0c;
-      transform: scale(1.08);
-    }
+    .file-subview-wrapper { display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; }
+    .file-form-card { position: relative; background-color: #27272a; border-radius: 20px; width: 100%; max-width: 480px; padding: 36px; display: flex; flex-direction: column; }
+    .file-form-title { font-size: 22px; font-weight: 800; color: #ffffff; margin-bottom: 18px; }
+    .file-name-input { width: 100%; height: 52px; background-color: #4b4c50; border: none; outline: none; border-radius: 16px; padding: 0 22px; color: #ffffff; font-size: 20px; font-weight: 700; margin-bottom: 24px; }
+    .create-file-btn { align-self: flex-end; background-color: #2faf0a; color: #ffffff; border: none; outline: none; border-radius: 16px; padding: 12px 28px; font-size: 22px; font-weight: 800; cursor: pointer; }
 
-    .close-subview-btn iconify-icon {
-      font-size: 24px;
-    }
+    .editor-subview-wrapper { height: 100%; width: 100%; display: flex; flex-direction: column; }
+    .piano-editor-card { position: relative; background-color: #535353; border-radius: 20px; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+    .active-project-banner { position: absolute; top: 20px; left: 20px; font-size: 20px; font-weight: 800; color: #ffffff; background-color: rgba(0, 0, 0, 0.4); padding: 8px 18px; border-radius: 12px; }
 
-    /* --- CENTERED FILE FORM CARD VIEW --- */
-    .file-subview-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      width: 100%;
-    }
-
-    .file-form-card {
-      position: relative;
-      background-color: #27272a;
-      border-radius: 20px;
-      width: 100%;
-      max-width: 480px;
-      padding: 36px 36px 32px 36px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .file-form-title {
-      font-size: 22px;
-      font-weight: 800;
-      color: #ffffff;
-      margin-bottom: 18px;
-    }
-
-    .file-name-input {
-      width: 100%;
-      height: 52px;
-      background-color: #4b4c50;
-      border: none;
-      outline: none;
-      border-radius: 16px;
-      padding: 0 22px;
-      color: #ffffff;
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 24px;
-    }
-
-    .file-name-input::placeholder {
-      color: #b0b1b5;
-      font-weight: 700;
-    }
-
-    .create-file-btn {
-      align-self: flex-end;
-      background-color: #2faf0a;
-      color: #ffffff;
-      border: none;
-      outline: none;
-      border-radius: 16px;
-      padding: 12px 28px;
-      font-size: 22px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
-    }
-
-    .create-file-btn:hover {
-      background-color: #38c80d;
-      transform: scale(1.02);
-    }
-
-    /* --- PIANO EDITOR VIEW --- */
-    .editor-subview-wrapper {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .piano-editor-card {
-      position: relative;
-      background-color: #535353;
-      border-radius: 20px;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .active-project-banner {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      font-size: 20px;
-      font-weight: 800;
-      color: #ffffff;
-      background-color: rgba(0, 0, 0, 0.4);
-      padding: 8px 18px;
-      border-radius: 12px;
-      z-index: 5;
-    }
-
-    .piano-keyboard-strip {
-      width: 100%;
-      height: 230px;
-      background-color: #ffffff;
-      position: relative;
-      display: flex;
-      touch-action: manipulation;
-    }
-
-    .white-key {
-      flex: 1;
-      height: 100%;
-      border-right: 2px solid #2d2d2d;
-      background-color: #ffffff;
-      cursor: pointer;
-      user-select: none;
-      touch-action: manipulation;
-    }
-
-    .white-key:active, .white-key.active {
-      background-color: #e0e0e0;
-    }
-
-    .white-key:last-child {
-      border-right: none;
-    }
-
-    .black-key {
-      position: absolute;
-      top: 0;
-      width: 9.8%;
-      height: 60%;
-      background-color: #000000;
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
-      z-index: 2;
-      cursor: pointer;
-      user-select: none;
-      touch-action: manipulation;
-    }
-
-    .black-key:active, .black-key.active {
-      background-color: #333333;
-    }
-
+    .piano-keyboard-strip { width: 100%; height: 230px; background-color: #ffffff; position: relative; display: flex; touch-action: manipulation; }
+    .white-key { flex: 1; height: 100%; border-right: 2px solid #2d2d2d; background-color: #ffffff; cursor: pointer; user-select: none; touch-action: manipulation; }
+    .white-key:active { background-color: #e0e0e0; }
+    .black-key { position: absolute; top: 0; width: 9.8%; height: 60%; background-color: #000000; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; z-index: 2; cursor: pointer; user-select: none; touch-action: manipulation; }
     .black-key.k1 { left: 9.3%; }
     .black-key.k2 { left: 23.6%; }
     .black-key.k3 { left: 52.2%; }
     .black-key.k4 { left: 66.5%; }
     .black-key.k5 { left: 80.8%; }
 
-    /* --- CONFIRM DELETE MODAL --- */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      backdrop-filter: blur(4px);
-    }
+    /* DELETE MODAL */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(4px); }
+    .modal-card { background-color: #27272a; border-radius: 20px; padding: 28px; width: 90%; max-width: 400px; display: flex; flex-direction: column; gap: 16px; border: 1px solid #3f4045; }
+    .modal-title { font-size: 22px; font-weight: 800; color: #ffffff; }
+    .modal-text { font-size: 16px; color: #d1d2d5; }
+    .modal-buttons { display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px; }
+    .modal-btn { padding: 10px 20px; border-radius: 12px; border: none; font-size: 16px; font-weight: 700; cursor: pointer; }
+    .cancel-btn { background-color: #4b4c50; color: #ffffff; }
+    .confirm-delete-btn { background-color: #ff3b30; color: #ffffff; }
 
-    .modal-card {
-      background-color: #27272a;
-      border-radius: 20px;
-      padding: 28px 28px 24px 28px;
-      width: 90%;
-      max-width: 400px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-      border: 1px solid #3f4045;
-    }
-
-    .modal-title {
-      font-size: 22px;
-      font-weight: 800;
-      color: #ffffff;
-    }
-
-    .modal-text {
-      font-size: 16px;
-      color: #d1d2d5;
-      line-height: 1.4;
-    }
-
-    .modal-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    .modal-btn {
-      padding: 10px 20px;
-      border-radius: 12px;
-      border: none;
-      outline: none;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.1s, background-color 0.2s;
-    }
-
-    .cancel-btn {
-      background-color: #4b4c50;
-      color: #ffffff;
-    }
-
-    .cancel-btn:hover {
-      background-color: #5c5d62;
-    }
-
-    .confirm-delete-btn {
-      background-color: #ff3b30;
-      color: #ffffff;
-    }
-
-    .confirm-delete-btn:hover {
-      background-color: #ff1a0c;
-    }
-
-    /* TABLET & IPAD RESPONSIVE RULES (Up to 1024px) */
+    /* TABLET & MOBILE RESPONSIVENESS */
     @media (max-width: 1024px) {
       .logo-container { width: 170px; }
       .logo { font-size: 24px; }
       .sidebar { width: 72px; padding: 10px 6px; align-items: center; }
-      .nav-item { padding: 10px; border-radius: 12px; justify-content: center; }
+      .nav-item { padding: 10px; justify-content: center; }
       .nav-item span { display: none; }
       .nav-item iconify-icon { font-size: 26px; }
-      .create-container { padding-right: 4px; justify-content: flex-start; }
     }
 
-    /* MOBILE PORTRAIT RULES */
     @media (max-width: 768px) and (orientation: portrait) {
       body { padding: 8px; }
       .top-bar { height: 50px; gap: 8px; }
       .logo-container { width: 130px; }
       .logo { font-size: 19px; }
       .search-bar { width: 100%; height: 36px; padding: 0 10px; }
-      .search-bar input { font-size: 14px; }
       .main-container { flex-direction: column-reverse; padding: 8px 0 0 0; gap: 8px; }
       .sidebar { width: 100%; height: 56px; flex-direction: row; justify-content: space-between; align-items: center; padding: 6px 8px; border-radius: 14px; overflow-x: auto; flex-shrink: 0; }
-      .nav-item { padding: 8px; border-radius: 10px; }
-      .active-project-banner { top: 12px; left: 12px; font-size: 15px; padding: 6px 12px; }
-      .close-subview-btn { top: 12px; right: 12px; width: 34px; height: 34px; }
+      .nav-item { padding: 8px; }
       .piano-keyboard-strip { height: 200px; }
-      .file-form-card { width: 92%; padding: 24px; }
-      .create-file-btn { width: 100%; font-size: 18px; }
     }
   </style>
 </head>
@@ -610,7 +408,7 @@
     </div>
   </header>
 
-  <!-- Main Area with Sidebar and Views -->
+  <!-- Main Container -->
   <div class="main-container">
     <nav class="sidebar">
       <a href="#" class="nav-item active" data-target="home-view" data-placeholder="Search ChordiKey">
@@ -653,16 +451,12 @@
 
     <!-- Content Area Container -->
     <div class="content-area">
-      <!-- 1. Home Page View -->
       <div id="home-view" class="page-view active"></div>
 
-      <!-- 2. Create Page View -->
+      <!-- Create View -->
       <div id="create-view" class="page-view">
-        
-        <!-- Subview A: Scrollable Dynamic Project List View -->
         <div id="create-main-subview" class="create-container"></div>
 
-        <!-- Subview B: Centered File Name Input View -->
         <div id="create-file-subview" class="file-subview-wrapper hidden">
           <div class="file-form-card">
             <button class="close-subview-btn" id="close-file-btn" title="Close">
@@ -674,17 +468,13 @@
           </div>
         </div>
 
-        <!-- Subview C: Piano Keyboard Editor View -->
         <div id="create-editor-subview" class="editor-subview-wrapper hidden">
           <div class="piano-editor-card">
             <button class="close-subview-btn" id="close-editor-btn" title="Close editor">
               <iconify-icon icon="ic:round-close"></iconify-icon>
             </button>
-
             <div id="current-project-title" class="active-project-banner">Project: Untitled</div>
-
             <div class="piano-keyboard-strip">
-              <!-- White Keys (C4 to B4) -->
               <div class="white-key" data-freq="261.63"></div>
               <div class="white-key" data-freq="293.66"></div>
               <div class="white-key" data-freq="329.63"></div>
@@ -693,7 +483,6 @@
               <div class="white-key" data-freq="440.00"></div>
               <div class="white-key" data-freq="493.88"></div>
 
-              <!-- Black Keys (C#4, D#4, F#4, G#4, A#4) -->
               <div class="black-key k1" data-freq="277.18"></div>
               <div class="black-key k2" data-freq="311.13"></div>
               <div class="black-key k3" data-freq="369.99"></div>
@@ -702,12 +491,39 @@
             </div>
           </div>
         </div>
-
       </div>
+
+      <!-- PROFILE PAGE VIEW WITH GOOGLE SIGN-IN -->
+      <div id="profile-view" class="page-view">
+        <div class="profile-card">
+          <!-- State 1: Logged Out -->
+          <div id="profile-logged-out" class="profile-state">
+            <iconify-icon icon="gg:profile" class="profile-avatar-icon"></iconify-icon>
+            <h2>Cloud Sync & Profile</h2>
+            <p>Connect your Google Account to back up your musical projects safely in the cloud.</p>
+            <button id="google-login-btn" class="google-auth-btn">
+              <iconify-icon icon="logos:google-icon"></iconify-icon>
+              <span>Sign in with Google</span>
+            </button>
+          </div>
+
+          <!-- State 2: Logged In -->
+          <div id="profile-logged-in" class="profile-state hidden">
+            <img id="user-avatar" class="user-avatar-img" src="" alt="Profile Picture">
+            <h2 id="user-display-name">User Name</h2>
+            <p id="user-email">user@gmail.com</p>
+            <button id="google-logout-btn" class="google-logout-btn">
+              <iconify-icon icon="material-symbols:logout-rounded"></iconify-icon>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <!-- Are You Sure Delete Confirmation Modal -->
+  <!-- Delete Modal -->
   <div id="delete-modal" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-title">Delete File?</div>
@@ -719,7 +535,6 @@
     </div>
   </div>
 
-  <!-- External JavaScript Link -->
   <script src="script.js"></script>
 </body>
 </html>
