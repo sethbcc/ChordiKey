@@ -146,7 +146,6 @@ async function openPianoEditor(title) {
     console.log("Landscape lock waiting for interaction.");
   }
 
-  // Defer rendering to ensure browser finishes layout recalculation
   setTimeout(() => {
     renderPiano();
   }, 50);
@@ -236,11 +235,11 @@ submitCreateFileBtn.addEventListener('click', () => {
 });
 
 // =========================================================
-// 3. AUDIO SYNTHESIZER & DYNAMIC 88-KEY PIANO ENGINE
+// 3. ACOUSTIC PIANO SYNTHESIZER (ADDITIVE HARMONIC ENGINE)
 // =========================================================
 let audioCtx = null;
 
-function playNote(frequency) {
+function playNote(freq) {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
@@ -248,23 +247,77 @@ function playNote(frequency) {
     audioCtx.resume();
   }
 
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
+  const now = audioCtx.currentTime;
+  
+  // Master Envelope for this note strike
+  const noteGain = audioCtx.createGain();
+  
+  // Dynamic Bass Boost: Low frequencies need higher gain & rich overtones to be audible on standard speakers
+  let baseVolume = 0.45;
+  if (freq < 150) {
+    baseVolume = 0.75; 
+  }
 
-  osc.type = 'triangle';
-  osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+  noteGain.gain.setValueAtTime(baseVolume, now);
+  noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.8);
 
-  gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
+  // Piano String Harmonic Spectrum (Overtones give the piano its signature timbre)
+  const harmonics = [
+    { mult: 1.0, gain: 1.0, type: 'triangle' }, // Fundamental Tone
+    { mult: 2.0, gain: 0.65, type: 'sine' },     // 1st Overtone
+    { mult: 3.0, gain: 0.45, type: 'sine' },     // 2nd Overtone
+    { mult: 4.0, gain: 0.25, type: 'sine' },     // 3rd Overtone
+    { mult: 5.0, gain: 0.15, type: 'sine' }      // 4th Overtone
+  ];
 
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
+  const isBassNote = freq < 140;
 
-  osc.start();
-  osc.stop(audioCtx.currentTime + 1.2);
+  harmonics.forEach((h) => {
+    const osc = audioCtx.createOscillator();
+    const hGain = audioCtx.createGain();
+
+    osc.type = h.type;
+    osc.frequency.setValueAtTime(freq * h.mult, now);
+
+    let harmonicGain = h.gain;
+    // Boost upper harmonics on bass keys so human ears & phone/laptop speakers can detect the note
+    if (isBassNote && h.mult > 1) {
+      harmonicGain *= 2.2; 
+    }
+
+    hGain.gain.setValueAtTime(harmonicGain, now);
+    
+    // Higher harmonics dampen faster than fundamental frequencies
+    const decayDuration = 2.8 / Math.sqrt(h.mult);
+    hGain.gain.exponentialRampToValueAtTime(0.0001, now + decayDuration);
+
+    osc.connect(hGain);
+    hGain.connect(noteGain);
+
+    osc.start(now);
+    osc.stop(now + 2.8);
+  });
+
+  // Percussive Hammer Strike Transient (Click sound when key hits string)
+  const clickOsc = audioCtx.createOscillator();
+  const clickGain = audioCtx.createGain();
+  clickOsc.type = 'sine';
+  clickOsc.frequency.setValueAtTime(freq * 0.5, now);
+  clickGain.gain.setValueAtTime(0.12, now);
+  clickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+
+  clickOsc.connect(clickGain);
+  clickGain.connect(noteGain);
+
+  clickOsc.start(now);
+  clickOsc.stop(now + 0.03);
+
+  noteGain.connect(audioCtx.destination);
 }
 
-// 88 Piano Key Setup
+// =========================================================
+// 4. DYNAMIC 88-KEY PIANO & GLISSANDO / SLIDING CONTROLLER
+// =========================================================
 const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const TOTAL_WHITE_KEYS = 52; 
 let visibleWhiteKeys = 7;
@@ -288,6 +341,24 @@ function generate88Keys() {
 
 const allKeysData = generate88Keys();
 
+// Multi-touch / Glissando pointer state map
+const activePointers = new Map();
+
+function activateKey(keyEl) {
+  if (!keyEl) return;
+  const freq = parseFloat(keyEl.dataset.freq);
+  if (!isNaN(freq)) {
+    playNote(freq);
+  }
+  keyEl.classList.add('active');
+}
+
+function deactivateKey(keyEl) {
+  if (keyEl) {
+    keyEl.classList.remove('active');
+  }
+}
+
 function renderPiano() {
   if (!keyboardElem || !viewportElem) return;
   keyboardElem.innerHTML = '';
@@ -300,19 +371,12 @@ function renderPiano() {
 
   allKeysData.forEach((keyData) => {
     const keyEl = document.createElement('div');
+    keyEl.dataset.freq = keyData.freq;
+    keyEl.dataset.note = keyData.note;
     
     if (!keyData.isBlack) {
       keyEl.className = 'key-white';
       keyEl.style.width = `${whiteKeyWidth}px`;
-
-      keyEl.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        playNote(keyData.freq);
-        keyEl.classList.add('active');
-      });
-      keyEl.addEventListener('pointerup', () => keyEl.classList.remove('active'));
-      keyEl.addEventListener('pointerleave', () => keyEl.classList.remove('active'));
-
       keyboardElem.appendChild(keyEl);
       currentWhiteIndex++;
     } else {
@@ -320,21 +384,55 @@ function renderPiano() {
       keyEl.style.width = `${blackKeyWidth}px`;
       const leftPos = (currentWhiteIndex * whiteKeyWidth) - (blackKeyWidth / 2);
       keyEl.style.left = `${leftPos}px`;
-
-      keyEl.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        playNote(keyData.freq);
-        keyEl.classList.add('active');
-      });
-      keyEl.addEventListener('pointerup', () => keyEl.classList.remove('active'));
-      keyEl.addEventListener('pointerleave', () => keyEl.classList.remove('active'));
-
       keyboardElem.appendChild(keyEl);
     }
   });
 
   keyboardElem.style.width = `${currentWhiteIndex * whiteKeyWidth}px`;
+}
+
+// Global Viewport Pointer Event Handlers for Glissando (Finger/Mouse Sliding)
+if (viewportElem) {
+  viewportElem.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    const target = document.elementFromPoint(e.clientX, e.clientY);
+    const keyEl = target ? target.closest('.key-white, .key-black') : null;
+
+    if (keyEl) {
+      activateKey(keyEl);
+      activePointers.set(e.pointerId, keyEl);
+    }
+  });
+
+  viewportElem.addEventListener('pointermove', (e) => {
+    if (!activePointers.has(e.pointerId)) return;
+
+    const target = document.elementFromPoint(e.clientX, e.clientY);
+    const newKeyEl = target ? target.closest('.key-white, .key-black') : null;
+    const currentKeyEl = activePointers.get(e.pointerId);
+
+    if (newKeyEl !== currentKeyEl) {
+      deactivateKey(currentKeyEl);
+      if (newKeyEl) {
+        activateKey(newKeyEl);
+        activePointers.set(e.pointerId, newKeyEl);
+      } else {
+        activePointers.delete(e.pointerId);
+      }
+    }
+  });
+
+  const handlePointerEnd = (e) => {
+    if (activePointers.has(e.pointerId)) {
+      const keyEl = activePointers.get(e.pointerId);
+      deactivateKey(keyEl);
+      activePointers.delete(e.pointerId);
+    }
+  };
+
+  viewportElem.addEventListener('pointerup', handlePointerEnd);
+  viewportElem.addEventListener('pointercancel', handlePointerEnd);
+  viewportElem.addEventListener('pointerleave', handlePointerEnd);
 }
 
 // Zoom Handlers
