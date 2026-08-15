@@ -12,31 +12,33 @@ const userEmail = document.getElementById('user-email');
 
 let currentUser = null;
 
-googleLoginBtn.addEventListener('click', () => {
-  auth.signInWithPopup(provider)
-    .then((result) => console.log("Logged in user:", result.user.displayName))
-    .catch((error) => alert("Google Sign-In Failed: " + error.message));
-});
+if (typeof auth !== 'undefined') {
+  googleLoginBtn.addEventListener('click', () => {
+    auth.signInWithPopup(provider)
+      .then((result) => console.log("Logged in user:", result.user.displayName))
+      .catch((error) => alert("Google Sign-In Failed: " + error.message));
+  });
 
-googleLogoutBtn.addEventListener('click', () => {
-  auth.signOut().catch((error) => console.error("Logout failed:", error));
-});
+  googleLogoutBtn.addEventListener('click', () => {
+    auth.signOut().catch((error) => console.error("Logout failed:", error));
+  });
 
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    currentUser = user;
-    userDisplayName.textContent = user.displayName || "User";
-    userEmail.textContent = user.email || "";
-    userAvatar.src = user.photoURL || "https://via.placeholder.com/80";
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      currentUser = user;
+      userDisplayName.textContent = user.displayName || "User";
+      userEmail.textContent = user.email || "";
+      userAvatar.src = user.photoURL || "https://via.placeholder.com/80";
 
-    profileLoggedOut.classList.add('hidden');
-    profileLoggedIn.classList.remove('hidden');
-  } else {
-    currentUser = null;
-    profileLoggedIn.classList.add('hidden');
-    profileLoggedOut.classList.remove('hidden');
-  }
-});
+      profileLoggedOut.classList.add('hidden');
+      profileLoggedIn.classList.remove('hidden');
+    } else {
+      currentUser = null;
+      profileLoggedIn.classList.add('hidden');
+      profileLoggedOut.classList.remove('hidden');
+    }
+  });
+}
 
 // =========================================================
 // 2. GENERAL UI & NAVIGATION CONTROL
@@ -128,12 +130,11 @@ function renderProjects(filterTerm = '') {
   createMainSubview.appendChild(addCardItem);
 }
 
-// Fullscreen Editor & Mobile Landscape Toggle
+// Fullscreen Editor
 async function openPianoEditor(title) {
   document.body.classList.add('editor-active');
   showSubview(createEditorSubview);
 
-  // Lock phone to landscape if supported
   try {
     if (document.documentElement.requestFullscreen) {
       await document.documentElement.requestFullscreen();
@@ -142,10 +143,13 @@ async function openPianoEditor(title) {
       await screen.orientation.lock('landscape');
     }
   } catch (e) {
-    console.log("Landscape lock waiting for user gesture or mobile browser permissions.");
+    console.log("Landscape lock waiting for interaction.");
   }
 
-  renderPiano();
+  // Defer rendering to ensure browser finishes layout recalculation
+  setTimeout(() => {
+    renderPiano();
+  }, 50);
 }
 
 function exitPianoEditor() {
@@ -263,7 +267,7 @@ function playNote(frequency) {
 // 88 Piano Key Setup
 const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const TOTAL_WHITE_KEYS = 52; 
-let visibleWhiteKeys = 7; // Default max zoom in: 7 white keys (5 black keys)
+let visibleWhiteKeys = 7;
 
 const keyboardElem = document.getElementById('piano-keyboard');
 const viewportElem = document.getElementById('piano-viewport');
@@ -274,7 +278,7 @@ function generate88Keys() {
     const noteNum = i + 9; // A0 starts at index 9
     const noteName = NOTES[noteNum % 12];
     const octave = Math.floor(noteNum / 12);
-    const freq = 440 * Math.pow(2, (i - 48) / 12); // Pitch frequency calculation
+    const freq = 440 * Math.pow(2, (i - 48) / 12);
     const isBlack = noteName.includes('#');
 
     keys.push({ note: `${noteName}${octave}`, freq, isBlack });
@@ -288,7 +292,7 @@ function renderPiano() {
   if (!keyboardElem || !viewportElem) return;
   keyboardElem.innerHTML = '';
 
-  const viewportWidth = viewportElem.clientWidth || window.innerWidth;
+  const viewportWidth = viewportElem.clientWidth || window.innerWidth || 800;
   const whiteKeyWidth = viewportWidth / visibleWhiteKeys;
   const blackKeyWidth = whiteKeyWidth * 0.65;
 
