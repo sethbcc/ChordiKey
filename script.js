@@ -1,10 +1,6 @@
 // =========================================================
 // 1. FIREBASE AUTHENTICATION INITIALIZATION
 // =========================================================
-// Replace these placeholders with your config from Firebase Console:
-
-
-// Profile Page DOM Elements
 const profileLoggedOut = document.getElementById('profile-logged-out');
 const profileLoggedIn = document.getElementById('profile-logged-in');
 const googleLoginBtn = document.getElementById('google-login-btn');
@@ -16,24 +12,16 @@ const userEmail = document.getElementById('user-email');
 
 let currentUser = null;
 
-// Trigger Google Sign-In
 googleLoginBtn.addEventListener('click', () => {
   auth.signInWithPopup(provider)
-    .then((result) => {
-      console.log("Logged in user:", result.user.displayName);
-    })
-    .catch((error) => {
-      console.error("Login failed:", error.message);
-      alert("Google Sign-In Failed: " + error.message);
-    });
+    .then((result) => console.log("Logged in user:", result.user.displayName))
+    .catch((error) => alert("Google Sign-In Failed: " + error.message));
 });
 
-// Trigger Sign-Out
 googleLogoutBtn.addEventListener('click', () => {
   auth.signOut().catch((error) => console.error("Logout failed:", error));
 });
 
-// Update Profile View UI on Login State Change
 auth.onAuthStateChanged((user) => {
   if (user) {
     currentUser = user;
@@ -76,7 +64,6 @@ const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
 let savedProjects = JSON.parse(localStorage.getItem('chordikey_projects')) || [];
 let projectToDeleteId = null;
 
-// Subview Switcher
 function showSubview(targetSubview) {
   createMainSubview.classList.add('hidden');
   createFileSubview.classList.add('hidden');
@@ -85,7 +72,6 @@ function showSubview(targetSubview) {
   targetSubview.classList.remove('hidden');
 }
 
-// Render Projects with Live Search
 function renderProjects(filterTerm = '') {
   createMainSubview.innerHTML = '';
 
@@ -123,7 +109,6 @@ function renderProjects(filterTerm = '') {
     createMainSubview.appendChild(item);
   });
 
-  // Always show "Add New Project" Card
   const addCardItem = document.createElement('div');
   addCardItem.className = 'project-item';
   addCardItem.innerHTML = `
@@ -144,12 +129,41 @@ function renderProjects(filterTerm = '') {
   createMainSubview.appendChild(addCardItem);
 }
 
-function openPianoEditor(title) {
+// Fullscreen Editor & Mobile Landscape Toggle
+async function openPianoEditor(title) {
   currentProjectTitle.textContent = `Project: ${title}`;
+  document.body.classList.add('editor-active');
   showSubview(createEditorSubview);
+
+  // Lock phone to landscape if supported
+  try {
+    if (document.documentElement.requestFullscreen) {
+      await document.documentElement.requestFullscreen();
+    }
+    if (screen.orientation && screen.orientation.lock) {
+      await screen.orientation.lock('landscape');
+    }
+  } catch (e) {
+    console.log("Landscape lock waiting for user gesture or mobile browser permissions.");
+  }
+
+  renderPiano();
 }
 
-// Search and Enter Key Handlers
+function exitPianoEditor() {
+  document.body.classList.remove('editor-active');
+  if (document.exitFullscreen && document.fullscreenElement) {
+    document.exitFullscreen().catch(() => {});
+  }
+  if (screen.orientation && screen.orientation.unlock) {
+    screen.orientation.unlock();
+  }
+  showSubview(createMainSubview);
+}
+
+closeEditorBtn.addEventListener('click', exitPianoEditor);
+closeFileBtn.addEventListener('click', () => showSubview(createMainSubview));
+
 searchInput.addEventListener('input', (e) => renderProjects(e.target.value));
 searchInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
@@ -166,7 +180,6 @@ projectNameInput.addEventListener('keydown', (e) => {
   }
 });
 
-// Delete Modal Buttons
 cancelDeleteBtn.addEventListener('click', () => {
   projectToDeleteId = null;
   deleteModal.classList.add('hidden');
@@ -182,10 +195,6 @@ confirmDeleteBtn.addEventListener('click', () => {
   }
 });
 
-closeFileBtn.addEventListener('click', () => showSubview(createMainSubview));
-closeEditorBtn.addEventListener('click', () => showSubview(createMainSubview));
-
-// Sidebar Navigation Switcher
 navItems.forEach(item => {
   item.addEventListener('click', (e) => {
     e.preventDefault();
@@ -209,7 +218,6 @@ navItems.forEach(item => {
   });
 });
 
-// Create File Submit
 submitCreateFileBtn.addEventListener('click', () => {
   const fileName = projectNameInput.value.trim() || 'Untitled Project';
   const formattedDate = new Date().toLocaleDateString('en-US', {
@@ -226,7 +234,7 @@ submitCreateFileBtn.addEventListener('click', () => {
 });
 
 // =========================================================
-// 3. AUDIO SYNTHESIZER ENGINE
+// 3. AUDIO SYNTHESIZER & DYNAMIC 88-KEY PIANO ENGINE
 // =========================================================
 let audioCtx = null;
 
@@ -254,18 +262,95 @@ function playNote(frequency) {
   osc.stop(audioCtx.currentTime + 1.2);
 }
 
-const allKeys = document.querySelectorAll('.white-key, .black-key');
+// 88 Piano Key Setup
+const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const TOTAL_WHITE_KEYS = 52; 
+let visibleWhiteKeys = 7; // Default max zoom in: 7 white keys (5 black keys)
 
-function triggerKey(e, key) {
-  if (e.type === 'touchstart') e.preventDefault();
-  const freq = parseFloat(key.getAttribute('data-freq'));
-  if (freq) playNote(freq);
+const keyboardElem = document.getElementById('piano-keyboard');
+const viewportElem = document.getElementById('piano-viewport');
+
+function generate88Keys() {
+  const keys = [];
+  for (let i = 0; i < 88; i++) {
+    const noteNum = i + 9; // A0 starts at index 9
+    const noteName = NOTES[noteNum % 12];
+    const octave = Math.floor(noteNum / 12);
+    const freq = 440 * Math.pow(2, (i - 48) / 12); // Pitch frequency calculation
+    const isBlack = noteName.includes('#');
+
+    keys.push({ note: `${noteName}${octave}`, freq, isBlack });
+  }
+  return keys;
 }
 
-allKeys.forEach(key => {
-  key.addEventListener('touchstart', (e) => triggerKey(e, key), { passive: false });
-  key.addEventListener('mousedown', (e) => triggerKey(e, key));
+const allKeysData = generate88Keys();
+
+function renderPiano() {
+  if (!keyboardElem || !viewportElem) return;
+  keyboardElem.innerHTML = '';
+
+  const viewportWidth = viewportElem.clientWidth || (window.innerWidth - 32);
+  const whiteKeyWidth = viewportWidth / visibleWhiteKeys;
+  const blackKeyWidth = whiteKeyWidth * 0.65;
+
+  let currentWhiteIndex = 0;
+
+  allKeysData.forEach((keyData) => {
+    const keyEl = document.createElement('div');
+    
+    if (!keyData.isBlack) {
+      keyEl.className = 'key-white';
+      keyEl.style.width = `${whiteKeyWidth}px`;
+
+      keyEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        playNote(keyData.freq);
+        keyEl.classList.add('active');
+      });
+      keyEl.addEventListener('pointerup', () => keyEl.classList.remove('active'));
+      keyEl.addEventListener('pointerleave', () => keyEl.classList.remove('active'));
+
+      keyboardElem.appendChild(keyEl);
+      currentWhiteIndex++;
+    } else {
+      keyEl.className = 'key-black';
+      keyEl.style.width = `${blackKeyWidth}px`;
+      const leftPos = (currentWhiteIndex * whiteKeyWidth) - (blackKeyWidth / 2);
+      keyEl.style.left = `${leftPos}px`;
+
+      keyEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        playNote(keyData.freq);
+        keyEl.classList.add('active');
+      });
+      keyEl.addEventListener('pointerup', () => keyEl.classList.remove('active'));
+      keyEl.addEventListener('pointerleave', () => keyEl.classList.remove('active'));
+
+      keyboardElem.appendChild(keyEl);
+    }
+  });
+
+  keyboardElem.style.width = `${currentWhiteIndex * whiteKeyWidth}px`;
+}
+
+// Zoom Handlers
+document.getElementById('zoom-in-btn').addEventListener('click', () => {
+  if (visibleWhiteKeys > 7) {
+    visibleWhiteKeys = Math.max(7, visibleWhiteKeys - 5);
+    renderPiano();
+  }
 });
 
-// Initial Render
+document.getElementById('zoom-out-btn').addEventListener('click', () => {
+  if (visibleWhiteKeys < TOTAL_WHITE_KEYS) {
+    visibleWhiteKeys = Math.min(TOTAL_WHITE_KEYS, visibleWhiteKeys + 5);
+    renderPiano();
+  }
+});
+
+window.addEventListener('resize', renderPiano);
+
+// Initial Load
 renderProjects();
