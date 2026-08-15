@@ -16,61 +16,6 @@ const userEmail = document.getElementById('user-email');
 
 let currentUser = null;
 
-// =========================================================
-// 1. FIREBASE AUTHENTICATION INITIALIZATION
-// =========================================================
-
-// Profile Page DOM Elements
-const profileLoggedOut = document.getElementById('profile-logged-out');
-const profileLoggedIn = document.getElementById('profile-logged-in');
-const googleLoginBtn = document.getElementById('google-login-btn');
-const googleLogoutBtn = document.getElementById('google-logout-btn');
-
-const userAvatar = document.getElementById('user-avatar');
-const userDisplayName = document.getElementById('user-display-name');
-const userEmail = document.getElementById('user-email');
-
-let currentUser = null;
-
-// Only attach Firebase handlers if auth is initialized properly
-if (typeof auth !== 'undefined') {
-  // Trigger Google Sign-In
-  googleLoginBtn.addEventListener('click', () => {
-    auth.signInWithPopup(provider)
-      .then((result) => {
-        console.log("Logged in user:", result.user.displayName);
-      })
-      .catch((error) => {
-        console.error("Login failed:", error.message);
-        alert("Google Sign-In Failed: " + error.message);
-      });
-  });
-
-  // Trigger Sign-Out
-  googleLogoutBtn.addEventListener('click', () => {
-    auth.signOut().catch((error) => console.error("Logout failed:", error));
-  });
-
-  // Update Profile View UI on Login State Change
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      currentUser = user;
-      userDisplayName.textContent = user.displayName || "User";
-      userEmail.textContent = user.email || "";
-      userAvatar.src = user.photoURL || "https://via.placeholder.com/80";
-
-      profileLoggedOut.classList.add('hidden');
-      profileLoggedIn.classList.remove('hidden');
-    } else {
-      currentUser = null;
-      profileLoggedIn.classList.add('hidden');
-      profileLoggedOut.classList.remove('hidden');
-    }
-  });
-} else {
-  console.warn("Firebase Auth is not initialized. Profile sync will be disabled.");
-}
-
 // Trigger Google Sign-In
 googleLoginBtn.addEventListener('click', () => {
   auth.signInWithPopup(provider)
