@@ -7,7 +7,6 @@ const firebaseConfig = {
   storageBucket: "chordikey.firebasestorage.app",
   messagingSenderId: "200443484160",
   appId: "1:200443484160:web:8c0e892f9811caea5620e5",
-  measurementId: "G-B8DKLCTZ9C"
 };
 
 // Initialize Firebase
