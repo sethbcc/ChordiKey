@@ -21,3 +21,7 @@
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
 </script>
+
+// Declare auth and provider globally
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
