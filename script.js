@@ -47,7 +47,6 @@ const searchInput = document.getElementById('main-search-input');
 
 const submitCreateFileBtn = document.getElementById('submit-create-file-btn');
 const projectNameInput = document.getElementById('project-name-input');
-const currentProjectTitle = document.getElementById('current-project-title');
 
 const createMainSubview = document.getElementById('create-main-subview');
 const createFileSubview = document.getElementById('create-file-subview');
@@ -131,7 +130,6 @@ function renderProjects(filterTerm = '') {
 
 // Fullscreen Editor & Mobile Landscape Toggle
 async function openPianoEditor(title) {
-  currentProjectTitle.textContent = `Project: ${title}`;
   document.body.classList.add('editor-active');
   showSubview(createEditorSubview);
 
@@ -290,7 +288,7 @@ function renderPiano() {
   if (!keyboardElem || !viewportElem) return;
   keyboardElem.innerHTML = '';
 
-  const viewportWidth = viewportElem.clientWidth || (window.innerWidth - 32);
+  const viewportWidth = viewportElem.clientWidth || window.innerWidth;
   const whiteKeyWidth = viewportWidth / visibleWhiteKeys;
   const blackKeyWidth = whiteKeyWidth * 0.65;
 
